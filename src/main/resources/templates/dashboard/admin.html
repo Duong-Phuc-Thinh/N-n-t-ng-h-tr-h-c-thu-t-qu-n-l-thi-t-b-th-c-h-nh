@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bảng điều hành - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=5)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{admin/fragments/layout :: sidebar('dashboard')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{admin/fragments/layout :: topbar('Bảng điều hành')}"></div>
+
+        <section class="page-heading">
+            <div>
+                <h2>Bảng điều hành hệ thống</h2>
+                <p>Chào mừng trở lại, theo dõi vận hành thiết bị và phòng lab tại một nơi.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="primary-button" th:href="@{/admin/equipments/new}">
+                    <span class="button-icon">+</span>
+                    Tạo thiết bị mới
+                </a>
+            </div>
+        </section>
+
+        <section class="equipment-stats">
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon blue">EQ</span>
+                    <span class="stat-pill green">Đang theo dõi</span>
+                </div>
+                <p>Tổng thiết bị</p>
+                <strong th:text="${stats.totalEquipments}">0</strong>
+            </article>
+
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon amber">LOW</span>
+                    <span class="stat-pill amber">Cảnh báo</span>
+                </div>
+                <p>Tồn kho thấp</p>
+                <strong th:text="${stats.lowStockEquipments}">0</strong>
+            </article>
+
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon green">OK</span>
+                    <span class="stat-pill green">Sẵn sàng</span>
+                </div>
+                <p>Thiết bị hoạt động</p>
+                <strong th:text="${stats.activeEquipments}">0</strong>
+            </article>
+
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon red">OFF</span>
+                    <span class="stat-pill red">Vô hiệu</span>
+                </div>
+                <p>Ngừng hoạt động</p>
+                <strong th:text="${stats.inactiveEquipments}">0</strong>
+            </article>
+        </section>
+
+        <section class="dashboard-grid">
+            <article class="dashboard-card wide">
+                <div class="section-heading">
+                    <h3>Xu hướng sử dụng thiết bị</h3>
+                    <p>Minh họa lượt mượn trả thiết bị trong tuần.</p>
+                </div>
+                <div class="bar-chart">
+                    <span style="--h:58%">T2</span>
+                    <span style="--h:74%">T3</span>
+                    <span style="--h:36%">T4</span>
+                    <span style="--h:86%">T5</span>
+                    <span style="--h:48%">T6</span>
+                    <span style="--h:30%">T7</span>
+                    <span style="--h:18%">CN</span>
+                </div>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="section-heading">
+                    <h3>Truy cập nhanh</h3>
+                    <p>Các tác vụ admin thường dùng.</p>
+                </div>
+                <div class="quick-links">
+                    <a th:href="@{/admin/equipments}">Quản lý thiết bị</a>
+                    <a th:href="@{/admin/issues}">Cấp phát thiết bị</a>
+                    <a th:href="@{/profile}">Hồ sơ cá nhân</a>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
+</body>
+</html>

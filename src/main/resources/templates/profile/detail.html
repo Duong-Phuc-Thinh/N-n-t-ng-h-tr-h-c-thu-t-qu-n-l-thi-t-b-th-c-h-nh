@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="light" lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Hồ sơ cá nhân | EduLab Nexus</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#000000",
+                        "primary-container": "#131b2e",
+                        "secondary": "#4b41e1",
+                        "secondary-container": "#645efb",
+                        "background": "#f8f9ff",
+                        "surface": "#f8f9ff",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container": "#e5eeff",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "on-surface-variant": "#45464d",
+                        "on-primary-container": "#7c839b",
+                        "outline-variant": "#c6c6cd",
+                        "error": "#ba1a1a"
+                    },
+                    spacing: {
+                        "gutter-desktop": "24px",
+                        "container-margin": "32px",
+                        "gutter-mobile": "16px"
+                    },
+                    borderRadius: {
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    fontFamily: {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    fontSize: {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<aside class="fixed left-0 top-0 hidden h-screen w-[280px] z-40 bg-primary-container lg:flex flex-col py-8 border-r border-outline-variant/20 shadow-md">
+    <div class="px-6 mb-10 flex items-center gap-3">
+        <div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">school</span>
+        </div>
+        <div>
+            <h1 class="text-title-md font-bold text-white leading-tight">EduLab Nexus</h1>
+            <p class="text-on-primary-container text-[11px] font-medium tracking-wider uppercase opacity-70">Hệ quản trị đại học</p>
+        </div>
+    </div>
+
+    <nav class="flex-1 space-y-1 px-4">
+        <a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:bg-white/5 hover:text-white transition-all rounded-lg"
+           th:href="@{/dashboard}">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-body-md">Tổng quan</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:bg-white/5 hover:text-white transition-all rounded-lg"
+           th:if="${profile.role.name() == 'LECTURER'}" href="/lecturer/dashboard#students-waiting">
+            <span class="material-symbols-outlined">groups</span>
+            <span class="font-body-md">Sinh viên chờ tư vấn</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:bg-white/5 hover:text-white transition-all rounded-lg"
+           th:if="${profile.role.name() == 'LECTURER'}" th:href="@{/lecturer/mentoring-history}">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span class="font-body-md">Lịch sử tư vấn</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:bg-white/5 hover:text-white transition-all rounded-lg"
+           th:if="${profile.role.name() == 'LECTURER'}" href="/lecturer/dashboard#resource-assignment">
+            <span class="material-symbols-outlined">assignment_add</span>
+            <span class="font-body-md">Chỉ định tài liệu</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:bg-white/5 hover:text-white transition-all rounded-lg"
+           th:if="${profile.role.name() == 'LECTURER'}" href="/lecturer/dashboard#post-class-review">
+            <span class="material-symbols-outlined">rate_review</span>
+            <span class="font-body-md">Nhập đánh giá</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-primary-container/70 hover:bg-white/5 hover:text-white transition-all rounded-lg"
+           th:if="${profile.role.name() == 'ADMIN'}" th:href="@{/admin/equipments}">
+            <span class="material-symbols-outlined">biotech</span>
+            <span class="font-body-md">Quản lý thiết bị</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 bg-white/10 text-white border-l-4 border-secondary-container font-semibold rounded-r-lg translate-x-1"
+           th:href="@{/profile}">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+            <span class="font-body-md">Hồ sơ cá nhân</span>
+        </a>
+    </nav>
+
+    <div class="px-4 mt-auto pt-6 border-t border-white/5">
+        <form th:action="@{/logout}" method="post">
+            <button class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition-all rounded-lg" type="submit">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="font-label-sm">Đăng xuất</span>
+            </button>
+        </form>
+    </div>
+</aside>
+
+<main class="lg:ml-[280px] min-h-screen">
+    <header class="sticky top-0 right-0 w-full z-30 h-16 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 flex justify-between items-center px-gutter-mobile lg:px-gutter-desktop">
+        <div class="flex items-center gap-3 lg:hidden">
+            <span class="material-symbols-outlined text-secondary">school</span>
+            <span class="font-bold">EduLab Nexus</span>
+        </div>
+        <div class="hidden lg:block relative w-full max-w-md">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+            <input class="w-full bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 text-body-md focus:ring-2 focus:ring-secondary/20"
+                   placeholder="Tìm kiếm thông tin..." type="text">
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="text-right hidden sm:block">
+                <p class="text-body-md font-bold leading-none" th:text="${profile.fullName}">Nguyễn Văn A</p>
+                <p class="text-label-sm text-on-surface-variant leading-tight" th:text="${profile.role}">LECTURER</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-secondary-container text-white grid place-items-center font-bold"
+                 th:text="${#strings.substring(profile.fullName,0,1)}">A</div>
+        </div>
+    </header>
+
+    <div class="p-gutter-mobile lg:p-container-margin">
+        <div class="mb-8">
+            <a class="inline-flex items-center gap-2 text-secondary font-semibold text-body-md mb-4 hover:underline" th:href="@{/dashboard}">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Quay lại dashboard
+            </a>
+            <h2 class="font-headline-lg text-headline-lg text-primary tracking-tight"
+                th:text="${profile.role.name() == 'LECTURER' ? 'Hồ sơ giảng viên' : (profile.role.name() == 'ADMIN' ? 'Hồ sơ quản trị viên' : 'Hồ sơ sinh viên')}">
+                Hồ sơ giảng viên
+            </h2>
+            <p class="text-body-lg text-on-surface-variant mt-1">Thông tin cá nhân và quyền truy cập của tài khoản đang đăng nhập.</p>
+        </div>
+
+        <div class="alert success-alert bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-6" th:if="${success}" th:text="${success}"></div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <section class="bg-white rounded-xl border border-outline-variant/30 shadow-sm p-8">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-32 h-32 rounded-full bg-secondary-container text-white grid place-items-center text-5xl font-bold mb-5"
+                         th:text="${#strings.substring(profile.fullName,0,1)}">A</div>
+                    <h3 class="font-title-md text-title-md text-primary" th:text="${profile.fullName}">Nguyễn Văn A</h3>
+                    <div class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-800 text-label-sm font-bold">
+                        <span class="w-2 h-2 rounded-full bg-green-600"></span>
+                        Đang hoạt động
+                    </div>
+                    <p class="mt-4 text-body-md text-on-surface-variant">
+                        <span th:switch="${profile.role.name()}">
+                            <span th:case="'LECTURER'">Giảng viên</span>
+                            <span th:case="'ADMIN'">Quản trị viên hệ thống</span>
+                            <span th:case="'STUDENT'">Sinh viên</span>
+                        </span>
+                        <br>
+                        <span th:text="${profile.departmentName} ?: 'EduLab Nexus'">Khoa Công nghệ Thông tin</span>
+                    </p>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-outline-variant/20 space-y-4">
+                    <div class="flex justify-between gap-4">
+                        <span class="text-on-surface-variant">Email</span>
+                        <span class="font-semibold text-right" th:text="${profile.email}">user@edulab.edu.vn</span>
+                    </div>
+                    <div class="flex justify-between gap-4">
+                        <span class="text-on-surface-variant">Số điện thoại</span>
+                        <span class="font-semibold" th:text="${profile.phone} ?: '-'">-</span>
+                    </div>
+                    <div class="flex justify-between gap-4">
+                        <span class="text-on-surface-variant">Vai trò</span>
+                        <span class="font-semibold" th:text="${profile.role}">LECTURER</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="xl:col-span-2 bg-white rounded-xl border border-outline-variant/30 shadow-sm p-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+                    <div>
+                        <h3 class="font-title-md text-title-md text-primary">Thông tin chi tiết</h3>
+                        <p class="text-body-md text-on-surface-variant">Dữ liệu được lấy từ hồ sơ tài khoản trong hệ thống.</p>
+                    </div>
+                    <a th:href="@{/profile/edit}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary hover:bg-secondary-container text-white text-body-md font-semibold shadow-sm transition-all">
+                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                        Cập nhật hồ sơ
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-2">
+                        <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Họ và tên</label>
+                        <input class="w-full rounded-lg border-outline-variant bg-surface-container-low p-3" readonly type="text" th:value="${profile.fullName}">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Email</label>
+                        <input class="w-full rounded-lg border-outline-variant bg-surface-container-low p-3" readonly type="email" th:value="${profile.email}">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Số điện thoại</label>
+                        <input class="w-full rounded-lg border-outline-variant bg-surface-container-low p-3" readonly type="text" th:value="${profile.phone} ?: '-'">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Khoa / đơn vị</label>
+                        <input class="w-full rounded-lg border-outline-variant bg-surface-container-low p-3" readonly type="text" th:value="${profile.departmentName} ?: 'EduLab Nexus'">
+                    </div>
+
+                    <div class="space-y-2" th:if="${profile.role.name() == 'LECTURER'}">
+                        <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Mã giảng viên</label>
+                        <input class="w-full rounded-lg border-outline-variant bg-surface-container-low p-3" readonly type="text" th:value="${profile.lecturerCode} ?: '-'">
+                    </div>
+                    <div class="space-y-2" th:if="${profile.role.name() == 'LECTURER'}">
+                        <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Học hàm / học vị</label>
+                        <input class="w-full rounded-lg border-outline-variant bg-surface-container-low p-3" readonly type="text" th:value="${profile.academicTitle} ?: '-'">
+                    </div>
+                    <div class="space-y-2 md:col-span-2" th:if="${profile.role.name() == 'LECTURER'}">
+                        <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Chuyên môn</label>
+                        <input class="w-full rounded-lg border-outline-variant bg-surface-container-low p-3" readonly type="text" th:value="${profile.specialty} ?: '-'">
+                    </div>
+
+                    <div class="space-y-2" th:if="${profile.role.name() == 'STUDENT'}">
+                        <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Mã sinh viên</label>
+                        <input class="w-full rounded-lg border-outline-variant bg-surface-container-low p-3" readonly type="text" th:value="${profile.studentCode} ?: '-'">
+                    </div>
+                    <div class="space-y-2" th:if="${profile.role.name() == 'STUDENT'}">
+                        <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Lớp</label>
+                        <input class="w-full rounded-lg border-outline-variant bg-surface-container-low p-3" readonly type="text" th:value="${profile.className} ?: '-'">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6" th:if="${profile.role.name() == 'LECTURER'}">
+            <a class="bg-white rounded-xl border border-outline-variant/30 shadow-sm p-6 hover:shadow-md transition-shadow"
+               href="/lecturer/dashboard#students-waiting">
+                <span class="material-symbols-outlined text-secondary text-[32px] mb-3">groups</span>
+                <h4 class="font-title-md text-title-md">Sinh viên chờ tư vấn</h4>
+                <p class="text-body-md text-on-surface-variant mt-2">Xem danh sách sinh viên cần hỗ trợ học thuật.</p>
+            </a>
+            <a class="bg-white rounded-xl border border-outline-variant/30 shadow-sm p-6 hover:shadow-md transition-shadow"
+               href="/lecturer/dashboard#resource-assignment">
+                <span class="material-symbols-outlined text-secondary text-[32px] mb-3">assignment_add</span>
+                <h4 class="font-title-md text-title-md">Chỉ định thiết bị / tài liệu</h4>
+                <p class="text-body-md text-on-surface-variant mt-2">Gợi ý tài liệu và thiết bị cần mượn cho sinh viên.</p>
+            </a>
+            <a class="bg-white rounded-xl border border-outline-variant/30 shadow-sm p-6 hover:shadow-md transition-shadow"
+               href="/lecturer/dashboard#post-class-review">
+                <span class="material-symbols-outlined text-secondary text-[32px] mb-3">rate_review</span>
+                <h4 class="font-title-md text-title-md">Nhập đánh giá</h4>
+                <p class="text-body-md text-on-surface-variant mt-2">Ghi nhận đánh giá sau buổi học hoặc tư vấn.</p>
+            </a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

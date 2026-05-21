@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý thiết bị - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=5)}">
+</head>
+<body>
+<div class="admin-shell edulab-shell">
+    <div th:replace="~{admin/fragments/layout :: sidebar('equipments')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{admin/fragments/layout :: topbar('Quản lý thiết bị')}"></div>
+
+        <section class="page-heading">
+            <div>
+                <h2>Quản lý thiết bị</h2>
+                <p>Theo dõi, kiểm kê và điều phối tài sản thiết bị kỹ thuật toàn hệ thống.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="secondary-button" th:href="@{/admin/dashboard}">Tổng quan</a>
+                <a class="primary-button" th:href="@{/admin/equipments/new}">
+                    <span class="button-icon">+</span>
+                    Thêm thiết bị
+                </a>
+            </div>
+        </section>
+
+        <section class="equipment-stats">
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon blue">EQ</span>
+                    <span class="stat-pill green">Đang theo dõi</span>
+                </div>
+                <p>Tổng thiết bị</p>
+                <strong th:text="${stats.totalEquipments}">0</strong>
+            </article>
+
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon green">OK</span>
+                    <span class="stat-pill green">Ổn định</span>
+                </div>
+                <p>Đang hoạt động</p>
+                <strong th:text="${stats.activeEquipments}">0</strong>
+            </article>
+
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon amber">LOW</span>
+                    <span class="stat-pill amber">Cảnh báo</span>
+                </div>
+                <p>Sắp hết</p>
+                <strong th:text="${stats.lowStockEquipments}">0</strong>
+            </article>
+
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon red">OFF</span>
+                    <span class="stat-pill red">Vô hiệu</span>
+                </div>
+                <p>Ngừng hoạt động</p>
+                <strong th:text="${stats.inactiveEquipments}">0</strong>
+            </article>
+        </section>
+
+        <section class="equipment-panel">
+            <div class="equipment-toolbar">
+                <div>
+                    <h3>Danh sách thiết bị</h3>
+                    <p th:text="'Hiển thị ' + ${#lists.size(equipments)} + ' thiết bị trong hệ thống'">
+                        Hiển thị thiết bị trong hệ thống
+                    </p>
+                </div>
+                <div class="equipment-filter-group">
+                    <select id="labRoomTypeFilter">
+                        <option th:value="@{/admin/equipments}" th:selected="${selectedLabRoomTypeId == null}">
+                            Tất cả danh mục phòng lab
+                        </option>
+                        <option th:each="type : ${labRoomTypes}"
+                                th:value="@{/admin/equipments(labRoomTypeId=${type.id})}"
+                                th:selected="${selectedLabRoomTypeId != null and selectedLabRoomTypeId == type.id}"
+                                th:text="${type.name}">Phòng lab</option>
+                    </select>
+                    <div class="toolbar-search">
+                        <span>Tìm kiếm</span>
+                        <input id="equipmentSearch" type="text" placeholder="Tên thiết bị, mã hoặc mô tả">
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert success-alert" th:if="${success}" th:text="${success}"></div>
+
+            <div class="table-wrap">
+                <table class="edulab-table" id="equipmentTable">
+                    <thead>
+                    <tr>
+                        <th>Tên thiết bị</th>
+                        <th>Mã thiết bị</th>
+                        <th>Mô tả</th>
+                        <th class="number-cell">Tổng</th>
+                        <th class="number-cell">Khả dụng</th>
+                        <th>Trạng thái</th>
+                        <th>Hoạt động</th>
+                        <th class="action-cell">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="equipment : ${equipments}">
+                        <td>
+                            <div class="equipment-name-cell">
+                                <span class="equipment-avatar" th:text="${#strings.substring(equipment.name,0,1)}">E</span>
+                                <div>
+                                    <strong th:text="${equipment.name}">Precision Workstation</strong>
+                                    <small th:text="${equipment.labRoomType.name}">Phòng lab</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="mono" th:text="${equipment.code}">EQ-001</td>
+                        <td class="description-cell" th:text="${equipment.description} ?: '-'">Description</td>
+                        <td class="number-cell" th:text="${equipment.quantityTotal}">0</td>
+                        <td class="number-cell" th:text="${equipment.quantityAvailable}">0</td>
+                        <td>
+                            <span th:class="'badge equipment-status ' + ${#strings.toLowerCase(equipment.status.name())}"
+                                  th:text="${equipment.status}">AVAILABLE</span>
+                        </td>
+                        <td>
+                            <span th:class="${equipment.active} ? 'badge active-badge' : 'badge inactive-badge'"
+                                  th:text="${equipment.active} ? 'ACTIVE' : 'INACTIVE'">ACTIVE</span>
+                        </td>
+                        <td class="action-cell">
+                            <div class="icon-actions">
+                                <a class="icon-button" title="Sửa"
+                                   th:href="@{/admin/equipments/{id}/edit(id=${equipment.id})}">Edit</a>
+                                <form th:if="${equipment.active}"
+                                      th:action="@{/admin/equipments/{id}/disable(id=${equipment.id})}"
+                                      method="post">
+                                    <button class="icon-button danger-icon" title="Vô hiệu hóa" type="submit">Disable</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(equipments)}">
+                        <td colspan="8" class="empty-cell">Chưa có thiết bị nào.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    const equipmentSearch = document.getElementById('equipmentSearch');
+    const equipmentRows = document.querySelectorAll('#equipmentTable tbody tr');
+
+    if (equipmentSearch) {
+        equipmentSearch.addEventListener('input', function () {
+            const keyword = this.value.toLowerCase().trim();
+            equipmentRows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none';
+            });
+        });
+    }
+
+    const labRoomTypeFilter = document.getElementById('labRoomTypeFilter');
+    if (labRoomTypeFilter) {
+        labRoomTypeFilter.addEventListener('change', function () {
+            window.location.href = this.value;
+        });
+    }
+</script>
+</body>
+</html>

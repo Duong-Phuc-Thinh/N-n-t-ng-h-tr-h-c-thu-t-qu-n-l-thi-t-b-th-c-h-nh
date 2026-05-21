@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dat lich co van - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/student.css(v=4)}">
+</head>
+<body>
+<div class="student-shell">
+    <div th:replace="~{student/fragments/layout :: sidebar('book')}"></div>
+
+    <main class="student-main">
+        <div th:replace="~{student/fragments/layout :: topbar('Dat lich co van')}"></div>
+
+        <section class="student-content">
+            <div class="booking-hero">
+                <div>
+                    <p class="eyebrow">Student mentoring</p>
+                    <h1>Dat lich co van hoc tap</h1>
+                    <p>Chon khoa, giang vien, ngay va khung gio de gui yeu cau tu van.</p>
+                </div>
+                <a class="secondary-button" th:href="@{/student/mentoring/history}">Lich su dat lich</a>
+            </div>
+
+            <div class="alert error-alert" th:if="${error}" th:text="${error}"></div>
+
+            <form class="booking-layout"
+                  id="bookingForm"
+                  th:action="@{/student/mentoring/book}"
+                  th:object="${mentoringBookingForm}"
+                  method="post">
+                <aside class="booking-stepper">
+                    <h3>Tien trinh</h3>
+                    <button class="booking-step active" data-step-target="1" type="button">
+                        <span>1</span>
+                        <strong>Khoa / nganh</strong>
+                        <small>Chon linh vuc tu van</small>
+                    </button>
+                    <button class="booking-step" data-step-target="2" type="button">
+                        <span>2</span>
+                        <strong>Giang vien</strong>
+                        <small>Chon nguoi huong dan</small>
+                    </button>
+                    <button class="booking-step" data-step-target="3" type="button">
+                        <span>3</span>
+                        <strong>Thoi gian</strong>
+                        <small>Chon ngay va khung gio</small>
+                    </button>
+                    <button class="booking-step" data-step-target="4" type="button">
+                        <span>4</span>
+                        <strong>Xac nhan</strong>
+                        <small>Kiem tra thong tin</small>
+                    </button>
+                </aside>
+
+                <section class="booking-panels">
+                    <div class="booking-panel active" data-step="1">
+                        <div class="booking-panel-head">
+                            <div>
+                                <h2>Chon khoa / nganh</h2>
+                                <p>Chon khoa truoc, sau do chon nganh dao tao truc thuoc khoa.</p>
+                            </div>
+                        </div>
+
+                        <div class="booking-card-grid">
+                            <label class="choice-card" th:each="department : ${departments}">
+                                <input type="radio" th:field="*{departmentId}" th:value="${department.id}">
+                                <span class="choice-icon">DP</span>
+                                <strong th:text="${department.name}">Khoa Cong nghe Thong tin</strong>
+                                <small th:text="${department.code}">CNTT</small>
+                            </label>
+                        </div>
+                        <div class="field-error" th:errors="*{departmentId}"></div>
+
+                        <div class="booking-subsection">
+                            <h3>Nganh dao tao</h3>
+                            <p>Danh sach nganh duoc lay tu bang majors va lien ket voi khoa da chon.</p>
+                        </div>
+                        <div class="booking-card-grid major-choice-grid">
+                            <label class="choice-card major-choice-card"
+                                   th:each="major : ${majors}"
+                                   th:attr="data-department-id=${major.department.id}">
+                                <input type="radio" th:field="*{majorId}" th:value="${major.id}">
+                                <span class="choice-icon">MJ</span>
+                                <strong th:text="${major.name}">Ky thuat phan mem</strong>
+                                <small th:text="${major.code}">7480103</small>
+                            </label>
+                        </div>
+                        <div class="empty-lecturer-message" id="emptyMajorMessage">Khong co nganh trong khoa da chon.</div>
+                        <div class="field-error" th:errors="*{majorId}"></div>
+
+                        <div class="booking-actions">
+                            <span></span>
+                            <button class="primary-button" data-next-step="2" type="button">Tiep tuc</button>
+                        </div>
+                    </div>
+
+                    <div class="booking-panel" data-step="2">
+                        <div class="booking-panel-head">
+                            <div>
+                                <h2>Chon giang vien</h2>
+                                <p>He thong se loc giang vien theo khoa ban da chon.</p>
+                            </div>
+                            <button class="secondary-button" data-prev-step="1" type="button">Quay lai</button>
+                        </div>
+
+                        <div class="lecturer-choice-grid">
+                            <label class="lecturer-choice-card"
+                                   th:each="lecturer : ${lecturers}"
+                                   th:attr="data-department-id=${lecturer.department.id}">
+                                <input type="radio" th:field="*{lecturerId}" th:value="${lecturer.id}">
+                                <span class="lecturer-avatar" th:text="${#strings.substring(lecturer.user.fullName,0,1)}">G</span>
+                                <span class="lecturer-info">
+                                    <strong th:text="${lecturer.user.fullName}">TS. Nguyen Van A</strong>
+                                    <small th:text="${lecturer.academicTitle ?: 'Giang vien'}">Giang vien</small>
+                                    <em th:text="${lecturer.specialization ?: 'Tu van hoc tap'}">Tu van hoc tap</em>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="empty-lecturer-message" id="emptyLecturerMessage">Khong co giang vien trong khoa da chon.</div>
+                        <div class="field-error" th:errors="*{lecturerId}"></div>
+
+                        <div class="booking-actions">
+                            <button class="secondary-button" data-prev-step="1" type="button">Quay lai</button>
+                            <button class="primary-button" data-next-step="3" type="button">Tiep tuc</button>
+                        </div>
+                    </div>
+
+                    <div class="booking-panel" data-step="3">
+                        <div class="booking-panel-head">
+                            <div>
+                                <h2>Chon thoi gian</h2>
+                                <p>Khong the dat lich qua khu hoac trung lich cua giang vien.</p>
+                            </div>
+                            <button class="secondary-button" data-prev-step="2" type="button">Quay lai</button>
+                        </div>
+
+                        <div class="booking-time-grid">
+                            <div class="form-group">
+                                <label for="bookingDate">Ngay tu van</label>
+                                <input id="bookingDate" type="date" th:field="*{bookingDate}" th:min="${today}">
+                                <div class="field-error" th:errors="*{bookingDate}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Khung gio</label>
+                                <div class="time-slot-grid">
+                                    <label class="time-slot" th:each="slot : ${timeSlots}">
+                                        <input type="radio"
+                                               th:field="*{timeSlot}"
+                                               th:value="${#temporals.format(slot, 'HH:mm')}">
+                                        <span th:text="${#temporals.format(slot, 'HH:mm')}">08:00</span>
+                                    </label>
+                                </div>
+                                <div class="field-error" th:errors="*{timeSlot}"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="topic">Chu de tu van</label>
+                            <input id="topic" type="text" th:field="*{topic}" placeholder="Vi du: Lap ke hoach hoc Java Web">
+                            <div class="field-error" th:errors="*{topic}"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Ghi chu cho giang vien</label>
+                            <textarea id="description" rows="5" th:field="*{description}" placeholder="Mo ta ngan gon van de ban muon trao doi..."></textarea>
+                            <div class="field-error" th:errors="*{description}"></div>
+                        </div>
+
+                        <div class="booking-actions">
+                            <button class="secondary-button" data-prev-step="2" type="button">Quay lai</button>
+                            <button class="primary-button" data-next-step="4" type="button">Tiep tuc xac nhan</button>
+                        </div>
+                    </div>
+
+                    <div class="booking-panel" data-step="4">
+                        <div class="booking-panel-head">
+                            <div>
+                                <h2>Xac nhan thong tin</h2>
+                                <p>Kiem tra lai thong tin truoc khi gui yeu cau dat lich.</p>
+                            </div>
+                            <button class="secondary-button" data-prev-step="3" type="button">Quay lai</button>
+                        </div>
+
+                        <div class="confirm-card">
+                            <div>
+                                <small>Khoa</small>
+                                <strong id="confirmDepartment">Chua chon</strong>
+                            </div>
+                            <div>
+                                <small>Nganh</small>
+                                <strong id="confirmMajor">Chua chon</strong>
+                            </div>
+                            <div>
+                                <small>Giang vien</small>
+                                <strong id="confirmLecturer">Chua chon</strong>
+                            </div>
+                            <div>
+                                <small>Ngay tu van</small>
+                                <strong id="confirmDate">Chua chon</strong>
+                            </div>
+                            <div>
+                                <small>Khung gio</small>
+                                <strong id="confirmTime">Chua chon</strong>
+                            </div>
+                            <div class="confirm-wide">
+                                <small>Chu de</small>
+                                <strong id="confirmTopic">Chua nhap</strong>
+                            </div>
+                            <div class="confirm-wide">
+                                <small>Ghi chu</small>
+                                <p id="confirmDescription">Khong co ghi chu</p>
+                            </div>
+                        </div>
+
+                        <div class="booking-actions">
+                            <button class="secondary-button" data-prev-step="3" type="button">Quay lai</button>
+                            <button class="primary-button primary-large" type="submit">Hoan tat dat lich</button>
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </section>
+    </main>
+</div>
+
+<script>
+    const panels = Array.from(document.querySelectorAll('.booking-panel'));
+    const stepButtons = Array.from(document.querySelectorAll('.booking-step'));
+    const departmentRadios = Array.from(document.querySelectorAll('input[name="departmentId"]'));
+    const majorCards = Array.from(document.querySelectorAll('.major-choice-card'));
+    const majorRadios = Array.from(document.querySelectorAll('input[name="majorId"]'));
+    const lecturerCards = Array.from(document.querySelectorAll('.lecturer-choice-card'));
+    const lecturerRadios = Array.from(document.querySelectorAll('input[name="lecturerId"]'));
+    const emptyLecturerMessage = document.getElementById('emptyLecturerMessage');
+    const emptyMajorMessage = document.getElementById('emptyMajorMessage');
+
+    function showStep(step) {
+        panels.forEach(panel => panel.classList.toggle('active', panel.dataset.step === String(step)));
+        stepButtons.forEach(button => {
+            const buttonStep = Number(button.dataset.stepTarget);
+            button.classList.toggle('active', buttonStep === Number(step));
+            button.classList.toggle('done', buttonStep < Number(step));
+        });
+        if (Number(step) === 4) {
+            syncConfirm();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectedText(selector) {
+        const checked = document.querySelector(selector + ':checked');
+        if (!checked) {
+            return null;
+        }
+        const card = checked.closest('label');
+        const strong = card ? card.querySelector('strong') : null;
+        return strong ? strong.innerText.trim() : checked.value;
+    }
+
+    function syncConfirm() {
+        document.getElementById('confirmDepartment').innerText = selectedText('input[name="departmentId"]') || 'Chua chon';
+        document.getElementById('confirmMajor').innerText = selectedText('input[name="majorId"]') || 'Chua chon';
+        document.getElementById('confirmLecturer').innerText = selectedText('input[name="lecturerId"]') || 'Chua chon';
+        document.getElementById('confirmDate').innerText = document.getElementById('bookingDate').value || 'Chua chon';
+        const checkedTime = document.querySelector('input[name="timeSlot"]:checked');
+        document.getElementById('confirmTime').innerText = checkedTime ? checkedTime.value : 'Chua chon';
+        document.getElementById('confirmTopic').innerText = document.getElementById('topic').value || 'Chua nhap';
+        document.getElementById('confirmDescription').innerText = document.getElementById('description').value || 'Khong co ghi chu';
+    }
+
+    function filterLecturers() {
+        const checkedDepartment = document.querySelector('input[name="departmentId"]:checked');
+        const departmentId = checkedDepartment ? checkedDepartment.value : '';
+        let visibleCount = 0;
+
+        lecturerCards.forEach(card => {
+            const radio = card.querySelector('input[type="radio"]');
+            const visible = !departmentId || card.dataset.departmentId === departmentId;
+            card.hidden = !visible;
+            radio.disabled = !visible;
+            if (visible) {
+                visibleCount++;
+            } else {
+                radio.checked = false;
+            }
+        });
+
+        emptyLecturerMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+        syncConfirm();
+    }
+
+    function filterMajors() {
+        const checkedDepartment = document.querySelector('input[name="departmentId"]:checked');
+        const departmentId = checkedDepartment ? checkedDepartment.value : '';
+        let visibleCount = 0;
+
+        majorCards.forEach(card => {
+            const radio = card.querySelector('input[type="radio"]');
+            const visible = !departmentId || card.dataset.departmentId === departmentId;
+            card.hidden = !visible;
+            radio.disabled = !visible;
+            if (visible) {
+                visibleCount++;
+            } else {
+                radio.checked = false;
+            }
+        });
+
+        emptyMajorMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+        syncConfirm();
+    }
+
+    function hasChecked(name) {
+        return Boolean(document.querySelector(`input[name="${name}"]:checked`));
+    }
+
+    function showValidationMessage(message) {
+        let alert = document.querySelector('.client-alert');
+        if (!alert) {
+            alert = document.createElement('div');
+            alert.className = 'alert error-alert client-alert';
+            document.querySelector('.booking-hero').after(alert);
+        }
+        alert.innerText = message;
+    }
+
+    function clearValidationMessage() {
+        const alert = document.querySelector('.client-alert');
+        if (alert) {
+            alert.remove();
+        }
+    }
+
+    function canMoveToStep(step) {
+        const targetStep = Number(step);
+        if (targetStep >= 2 && !hasChecked('departmentId')) {
+            showValidationMessage('Vui long chon khoa truoc.');
+            return false;
+        }
+        if (targetStep >= 2 && !hasChecked('majorId')) {
+            showValidationMessage('Vui long chon nganh thuoc khoa da chon.');
+            return false;
+        }
+        if (targetStep >= 3 && !hasChecked('lecturerId')) {
+            showValidationMessage('Vui long chon giang vien thuoc khoa da chon.');
+            return false;
+        }
+        if (targetStep >= 4) {
+            if (!document.getElementById('bookingDate').value || !hasChecked('timeSlot') || !document.getElementById('topic').value.trim()) {
+                showValidationMessage('Vui long chon ngay, khung gio va nhap chu de tu van.');
+                return false;
+            }
+        }
+        clearValidationMessage();
+        return true;
+    }
+
+    document.querySelectorAll('[data-next-step]').forEach(button => {
+        button.addEventListener('click', () => {
+            if (canMoveToStep(button.dataset.nextStep)) {
+                showStep(button.dataset.nextStep);
+            }
+        });
+    });
+
+    document.querySelectorAll('[data-prev-step]').forEach(button => {
+        button.addEventListener('click', () => showStep(button.dataset.prevStep));
+    });
+
+    stepButtons.forEach(button => {
+        button.addEventListener('click', () => showStep(button.dataset.stepTarget));
+    });
+
+    departmentRadios.forEach(radio => radio.addEventListener('change', () => {
+        filterMajors();
+        filterLecturers();
+        clearValidationMessage();
+    }));
+    majorRadios.forEach(radio => radio.addEventListener('change', syncConfirm));
+    lecturerRadios.forEach(radio => radio.addEventListener('change', syncConfirm));
+    document.getElementById('bookingDate').addEventListener('change', syncConfirm);
+    document.getElementById('topic').addEventListener('input', syncConfirm);
+    document.getElementById('description').addEventListener('input', syncConfirm);
+    document.querySelectorAll('input[name="timeSlot"]').forEach(radio => radio.addEventListener('change', syncConfirm));
+
+    document.getElementById('bookingForm').addEventListener('submit', event => {
+        if (!canMoveToStep(4)) {
+            event.preventDefault();
+            return;
+        }
+
+        const lecturer = document.querySelector('input[name="lecturerId"]:checked');
+        if (lecturer && lecturer.disabled) {
+            event.preventDefault();
+            showValidationMessage('Giang vien da chon khong thuoc khoa hien tai. Vui long chon lai giang vien.');
+        }
+    });
+
+    filterLecturers();
+    filterMajors();
+</script>
+</body>
+</html>

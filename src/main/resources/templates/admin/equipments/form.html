@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${formTitle} + ' - EduLab Nexus'">Cấu hình thiết bị</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=5)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{admin/fragments/layout :: sidebar('equipments')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{admin/fragments/layout :: topbar(${formTitle})}"></div>
+
+        <nav class="breadcrumb">
+            <a th:href="@{/admin/equipments}">Quản lý thiết bị</a>
+            <span>/</span>
+            <strong th:text="${formTitle}">Thêm thiết bị mới</strong>
+        </nav>
+
+        <section class="page-heading form-heading">
+            <div>
+                <h2>Cấu hình thiết bị Lab</h2>
+                <p>Điền đầy đủ thông tin để đăng ký hoặc cập nhật thiết bị trong hệ thống quản lý trung tâm.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="secondary-button" th:href="@{/admin/equipments}">Hủy bỏ</a>
+                <button class="primary-button" type="submit" form="equipmentForm">
+                    <span class="button-icon">✓</span>
+                    Lưu thay đổi
+                </button>
+            </div>
+        </section>
+
+        <div class="alert error-alert form-alert" th:if="${error}" th:text="${error}"></div>
+
+        <form id="equipmentForm"
+              class="equipment-form-layout"
+              th:action="@{${formAction}}"
+              th:object="${equipmentForm}"
+              method="post">
+            <div class="form-main-column">
+                <section class="glass-form-card">
+                    <div class="form-section-title">
+                        <span class="section-icon">i</span>
+                        <h3>Thông tin cơ bản</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Tên thiết bị</label>
+                        <input id="name"
+                               type="text"
+                               th:field="*{name}"
+                               placeholder="Ví dụ: Kính hiển vi quang học Olympus BX53">
+                        <div class="field-error" th:errors="*{name}"></div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Mã thiết bị</label>
+                            <input type="text" value="Tự động tạo khi lưu" disabled>
+                            <small>Mã thiết bị được hệ thống sinh tự động.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="labRoomTypeId">Danh mục thiết bị (Loại phòng Lab)</label>
+                            <select id="labRoomTypeId" th:field="*{labRoomTypeId}">
+                                <option value="" disabled selected>-- Chọn loại phòng Lab --</option>
+                                <option th:each="type : ${labRoomTypes}"
+                                        th:value="${type.id}"
+                                        th:text="${type.name}">Phong may tinh</option>
+                            </select>
+                            <div class="field-error" th:errors="*{labRoomTypeId}"></div>
+                            <small>Chọn danh mục phòng Lab ứng với thiết bị thực hành.</small>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="glass-form-card">
+                    <div class="form-section-title">
+                        <span class="section-icon">D</span>
+                        <h3>Chi tiết và mô tả</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Mô tả kỹ thuật</label>
+                        <textarea id="description"
+                                  rows="7"
+                                  th:field="*{description}"
+                                  placeholder="Mô tả chi tiết tính năng, thông số kỹ thuật và hướng dẫn an toàn..."></textarea>
+                        <div class="field-error" th:errors="*{description}"></div>
+                    </div>
+
+                    <div class="hint-box">
+                        <strong>Gợi ý</strong>
+                        <p>Mô tả nên bao gồm model sản phẩm và các linh kiện đi kèm để dễ đối soát khi bảo trì.</p>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="form-side-column">
+                <section class="glass-form-card compact">
+                    <div class="form-section-title small">
+                        <h3>Kho vận</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="totalQuantity">Tổng số lượng</label>
+                        <input id="totalQuantity" type="number" min="0" th:field="*{totalQuantity}">
+                        <div class="field-error" th:errors="*{totalQuantity}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availableQuantity">Số lượng khả dụng</label>
+                        <input id="availableQuantity" type="number" min="0" th:field="*{availableQuantity}">
+                        <div class="field-error" th:errors="*{availableQuantity}"></div>
+                        <div class="field-error" th:errors="*{quantityValid}"></div>
+                    </div>
+                </section>
+
+                <section class="glass-form-card compact">
+                    <div class="form-section-title small">
+                        <h3>Trạng thái</h3>
+                    </div>
+
+                    <div class="status-options">
+                        <label>
+                            <input type="radio" th:field="*{status}" value="AVAILABLE">
+                            <span>
+                                <strong>Đang hoạt động</strong>
+                                <small>Thiết bị sẵn sàng sử dụng</small>
+                            </span>
+                        </label>
+                        <label>
+                            <input type="radio" th:field="*{status}" value="MAINTENANCE">
+                            <span>
+                                <strong>Đang bảo trì</strong>
+                                <small>Chờ kiểm định hoặc sửa chữa</small>
+                            </span>
+                        </label>
+                        <label>
+                            <input type="radio" th:field="*{status}" value="DAMAGED">
+                            <span>
+                                <strong>Hư hỏng</strong>
+                                <small>Không nên cấp phát</small>
+                            </span>
+                        </label>
+                        <label>
+                            <input type="radio" th:field="*{status}" value="RETIRED">
+                            <span>
+                                <strong>Ngừng sử dụng</strong>
+                                <small>Đưa khỏi vòng vận hành</small>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="field-error" th:errors="*{status}"></div>
+                </section>
+
+                <section class="permission-card">
+                    <h3>Cấu hình nâng cao</h3>
+                    <p>Các tham số hệ thống sâu hơn sẽ được tách thành module riêng khi mở rộng.</p>
+                </section>
+            </aside>
+        </form>
+    </main>
+</div>
+</body>
+</html>

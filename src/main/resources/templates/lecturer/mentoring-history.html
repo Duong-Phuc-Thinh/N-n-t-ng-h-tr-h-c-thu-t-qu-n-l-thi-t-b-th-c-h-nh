@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lich su tu van - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=8)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{lecturer/fragments/layout :: sidebar('mentoring')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{lecturer/fragments/layout :: topbar('Lich su tu van')}"></div>
+
+        <section class="page-heading">
+            <div>
+                <h2>Danh sach ca tu van</h2>
+                <p>Chi hien thi sinh vien da dat lich voi chinh giang vien dang dang nhap.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="primary-button" th:href="@{/lecturer/equipment-requests/new}">Yeu cau thiet bi</a>
+            </div>
+        </section>
+
+        <div class="alert success-alert inline-alert" th:if="${success}" th:text="${success}"></div>
+        <div class="alert error-alert inline-alert" th:if="${error}" th:text="${error}"></div>
+
+        <section class="equipment-panel">
+            <div class="equipment-toolbar">
+                <div>
+                    <h3>Danh sach chi tiet</h3>
+                    <p>CORE-06: PENDING la ca cho xac nhan. Bam Tiep nhan de chuyen sang APPROVED truoc khi danh gia.</p>
+                </div>
+                <div class="toolbar-search">
+                    <span>Tim kiem</span>
+                    <input id="mentoringSearch" type="text" placeholder="Ten sinh vien, chu de, khoa, nganh">
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="edulab-table" id="mentoringTable">
+                    <thead>
+                    <tr>
+                        <th>Sinh vien va chu de</th>
+                        <th>Khoa / nganh</th>
+                        <th>Ngay gio hen</th>
+                        <th>Noi dung</th>
+                        <th>Dia diem</th>
+                        <th>Trang thai</th>
+                        <th>Thiet bi chi dinh</th>
+                        <th class="action-cell">Thao tac</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="booking : ${sessions}">
+                        <td>
+                            <div class="equipment-name-cell">
+                                <span class="equipment-avatar" th:text="${#strings.substring(booking.studentName,0,1)}">S</span>
+                                <div>
+                                    <strong th:text="${booking.studentName}">Sinh vien</strong>
+                                    <small th:text="${booking.topic}">Chu de</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <strong th:text="${booking.departmentName}">Khoa</strong>
+                            <small th:text="${booking.majorName}">Nganh</small>
+                        </td>
+                        <td>
+                            <strong th:text="${#temporals.format(booking.scheduledAt, 'dd/MM/yyyy')}">20/05/2026</strong>
+                            <small>
+                                <span th:text="${#temporals.format(booking.scheduledAt, 'HH:mm')}">08:00</span>
+                                <span th:text="' - ' + ${booking.durationMinutes} + ' phut'"> - 60 phut</span>
+                            </small>
+                        </td>
+                        <td class="description-cell" th:text="${booking.description} ?: 'Chua co mo ta'">Mo ta</td>
+                        <td th:text="${booking.location} ?: 'Lecturer office'">Lecturer office</td>
+                        <td>
+                            <span th:class="'badge status-' + ${#strings.toLowerCase(booking.status.name())}"
+                                  th:text="${booking.status}">PENDING</span>
+                        </td>
+                        <td>
+                            <div class="linked-equipment-list" th:if="${not #lists.isEmpty(booking.borrowedEquipments)}">
+                                <span class="linked-equipment-pill" th:each="eq : ${booking.borrowedEquipments}">
+                                    <strong th:text="${eq.equipmentName}">Thiet bi</strong>
+                                    <small th:text="${eq.labRoomTypeName} + ' - x' + ${eq.quantity}">Danh muc</small>
+                                </span>
+                            </div>
+                            <span class="muted-text" th:if="${#lists.isEmpty(booking.borrowedEquipments)}">Chua chi dinh</span>
+                        </td>
+                        <td class="action-cell">
+                            <div class="icon-actions">
+                                <form th:if="${booking.status.name() == 'PENDING'}"
+                                      th:action="@{/lecturer/mentoring-history/{id}/accept(id=${booking.id})}"
+                                      method="post">
+                                    <button class="primary-button" type="submit">Tiep nhan</button>
+                                </form>
+                                <a class="icon-button"
+                                   th:if="${booking.status.name() == 'PENDING' || booking.status.name() == 'APPROVED'}"
+                                   th:href="@{/lecturer/mentoring-history/{id}/edit(id=${booking.id})}">Sua lich</a>
+                                <a class="primary-button"
+                                   th:if="${booking.status.name() == 'APPROVED'}"
+                                   th:href="@{/lecturer/mentoring-history/{id}/complete(id=${booking.id})}">Danh gia</a>
+                                <a class="secondary-button"
+                                   th:if="${booking.status.name() == 'COMPLETED'}"
+                                   th:href="@{/lecturer/mentoring-history/{id}/complete(id=${booking.id})}">Xem</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(sessions)}">
+                        <td colspan="8" class="empty-cell">Chua co lich tu van nao.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    const mentoringSearch = document.getElementById('mentoringSearch');
+    const mentoringRows = document.querySelectorAll('#mentoringTable tbody tr');
+    if (mentoringSearch) {
+        mentoringSearch.addEventListener('input', function () {
+            const keyword = this.value.toLowerCase().trim();
+            mentoringRows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none';
+            });
+        });
+    }
+</script>
+</body>
+</html>

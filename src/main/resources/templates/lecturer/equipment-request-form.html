@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yêu cầu cấp phát thiết bị - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=6)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{lecturer/fragments/layout :: sidebar('equipment')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{lecturer/fragments/layout :: topbar('Yêu cầu cấp phát thiết bị')}"></div>
+
+        <nav class="breadcrumb">
+            <a th:href="@{/lecturer/dashboard}">Tổng quan</a>
+            <span>/</span>
+            <strong>Yêu cầu thiết bị</strong>
+        </nav>
+
+        <section class="page-heading form-heading">
+            <div>
+                <h2>Cấu hình phiếu yêu cầu thiết bị</h2>
+                <p>Giảng viên gửi yêu cầu cấp phát thiết bị lên admin. Admin sẽ kiểm tra tồn kho và xác nhận xuất kho.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="secondary-button" th:href="@{/lecturer/dashboard}">Hủy bỏ</a>
+                <button class="primary-button" type="submit" form="requestForm">Gửi yêu cầu</button>
+            </div>
+        </section>
+
+        <div class="alert error-alert form-alert" th:if="${error}" th:text="${error}"></div>
+
+        <form id="requestForm"
+              class="equipment-form-layout"
+              th:action="@{/lecturer/equipment-requests}"
+              th:object="${requestForm}"
+              method="post">
+            <div class="form-main-column">
+                <section class="glass-form-card">
+                    <div class="form-section-title">
+                        <span class="section-icon">i</span>
+                        <h3>Thông tin yêu cầu</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="purpose">Mục đích sử dụng</label>
+                        <input id="purpose" type="text" th:field="*{purpose}" placeholder="Ví dụ: Thực hành Vi mạch 02">
+                        <div class="field-error" th:errors="*{purpose}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="note">Ghi chú cho admin</label>
+                        <textarea id="note" rows="7" th:field="*{note}" placeholder="Mô tả lớp học, phòng lab, yêu cầu kỹ thuật hoặc lưu ý khi cấp phát..."></textarea>
+                        <div class="field-error" th:errors="*{note}"></div>
+                    </div>
+
+                    <div class="hint-box">
+                        <strong>Gợi ý</strong>
+                        <p>Ghi rõ phòng lab, nhóm/lớp sử dụng và yêu cầu kỹ thuật để admin cấp phát đúng thiết bị.</p>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="form-side-column">
+                <section class="glass-form-card compact">
+                    <div class="form-section-title small">
+                        <h3>Thiết bị</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="equipmentId">Chọn thiết bị</label>
+                        <select id="equipmentId" th:field="*{equipmentId}">
+                            <option value="">-- Chọn thiết bị --</option>
+                            <option th:each="equipment : ${equipments}"
+                                    th:value="${equipment.id}"
+                                    th:text="${equipment.name + ' - còn ' + equipment.quantityAvailable}">
+                            </option>
+                        </select>
+                        <div class="field-error" th:errors="*{equipmentId}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Số lượng</label>
+                        <input id="quantity" type="number" min="1" th:field="*{quantity}">
+                        <div class="field-error" th:errors="*{quantity}"></div>
+                    </div>
+                </section>
+
+                <section class="glass-form-card compact">
+                    <div class="form-section-title small">
+                        <h3>Thời gian</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="borrowDate">Ngày mượn</label>
+                        <input id="borrowDate" type="date" th:field="*{borrowDate}" th:min="${today}">
+                        <div class="field-error" th:errors="*{borrowDate}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expectedReturnDate">Ngày trả dự kiến</label>
+                        <input id="expectedReturnDate" type="date" th:field="*{expectedReturnDate}" th:min="${today}">
+                        <div class="field-error" th:errors="*{expectedReturnDate}"></div>
+                        <div class="field-error" th:errors="*{returnDateValid}"></div>
+                    </div>
+                </section>
+
+                <section class="permission-card">
+                    <h3>Quy trình</h3>
+                    <p>Sau khi gửi, phiếu sẽ chuyển sang trạng thái WAITING_ALLOCATION để admin xác nhận cấp phát.</p>
+                </section>
+            </aside>
+        </form>
+    </main>
+</div>
+</body>
+</html>

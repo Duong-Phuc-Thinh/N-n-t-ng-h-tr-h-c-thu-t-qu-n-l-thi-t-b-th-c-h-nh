@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lich su dat lich co van - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/student.css(v=4)}">
+</head>
+<body>
+<div class="student-shell">
+    <div th:replace="~{student/fragments/layout :: sidebar('mentoring')}"></div>
+
+    <main class="student-main">
+        <div th:replace="~{student/fragments/layout :: topbar('Lich su dat lich')}"></div>
+
+        <section class="student-content">
+            <header class="page-header">
+                <div>
+                    <p class="eyebrow">Student mentoring</p>
+                    <h1>Lich su dat lich co van</h1>
+                    <p>Chi hien thi cac lich do chinh tai khoan sinh vien hien tai da dat.</p>
+                </div>
+                <div class="header-actions">
+                    <a class="secondary-button" th:href="@{/student/dashboard}">Tong quan</a>
+                    <a class="primary-button" th:href="@{/student/mentoring}">Dat lich moi</a>
+                </div>
+            </header>
+
+            <div class="alert success-alert" th:if="${success}" th:text="${success}"></div>
+            <div class="alert error-alert" th:if="${error}" th:text="${error}"></div>
+
+            <section class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Giang vien</th>
+                            <th>Khoa</th>
+                            <th>Nganh</th>
+                            <th>Chu de</th>
+                            <th>Ngay gio</th>
+                            <th>Trang thai</th>
+                            <th>Thiet bi lien ket</th>
+                            <th>Thao tac</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="booking : ${bookings}">
+                            <td th:text="${booking.lecturerName}">Giang vien</td>
+                            <td th:text="${booking.departmentName}">Khoa</td>
+                            <td th:text="${booking.majorName}">Nganh</td>
+                            <td>
+                                <strong th:text="${booking.topic}">Chu de</strong>
+                                <small th:text="${booking.description} ?: 'Khong co mo ta'">Mo ta</small>
+                            </td>
+                            <td>
+                                <span th:text="${#temporals.format(booking.scheduledAt, 'dd/MM/yyyy HH:mm')}">20/05/2026 08:00</span>
+                                <small th:text="${booking.durationMinutes + ' phut'}">60 phut</small>
+                            </td>
+                            <td>
+                                <span th:class="'badge status-' + ${#strings.toLowerCase(booking.status.name())}"
+                                      th:text="${booking.status}">PENDING</span>
+                            </td>
+                            <td>
+                                <div class="linked-equipment-list" th:if="${not #lists.isEmpty(booking.borrowedEquipments)}">
+                                    <span class="linked-equipment-pill" th:each="eq : ${booking.borrowedEquipments}">
+                                        <strong th:text="${eq.equipmentName}">Thiet bi</strong>
+                                        <small th:text="'x' + ${eq.quantity} + ' - ' + ${eq.status}">x1</small>
+                                    </span>
+                                </div>
+                                <span class="muted-text" th:if="${#lists.isEmpty(booking.borrowedEquipments)}">Chua co</span>
+                            </td>
+                            <td>
+                                <form th:if="${booking.cancellable}"
+                                      th:action="@{/student/mentoring/{id}/cancel(id=${booking.id})}"
+                                      method="post"
+                                      class="cancel-form">
+                                    <input type="text" name="reason" placeholder="Ly do huy">
+                                    <button class="danger-button" type="submit">Huy lich</button>
+                                </form>
+                                <span class="muted-text" th:unless="${booking.cancellable}">Khong the huy</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(bookings)}">
+                            <td colspan="8" class="empty-cell">Ban chua co lich co van nao.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </main>
+</div>
+</body>
+</html>

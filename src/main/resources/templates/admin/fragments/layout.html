@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar(activeMenu)" class="admin-sidebar">
+    <div class="brand">
+        <span class="brand-mark">EL</span>
+        <div>
+            <strong>EduLab Nexus</strong>
+            <small>He quan tri dai hoc</small>
+        </div>
+    </div>
+
+    <nav class="side-nav">
+        <a th:href="@{/admin/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active'">
+            <span class="nav-icon">DB</span>
+            <span>Tong quan</span>
+        </a>
+        <a th:href="@{/admin/equipments}" th:classappend="${activeMenu == 'equipments'} ? 'active'">
+            <span class="nav-icon">EQ</span>
+            <span>Quan ly thiet bi</span>
+        </a>
+        <a th:href="@{/admin/catalog/departments}" th:classappend="${activeMenu == 'departments'} ? 'active'">
+            <span class="nav-icon">DP</span>
+            <span>Khoa &amp; Nganh</span>
+        </a>
+        <a th:href="@{/admin/catalog/lab-room-types}" th:classappend="${activeMenu == 'lab-room-types'} ? 'active'">
+            <span class="nav-icon">LB</span>
+            <span>Danh muc phong lab</span>
+        </a>
+        <a th:href="@{/admin/issues}" th:classappend="${activeMenu == 'issues'} ? 'active'">
+            <span class="nav-icon">IS</span>
+            <span>Cap phat thiet bi</span>
+        </a>
+    </nav>
+
+    <form class="logout-form" th:action="@{/logout}" method="post">
+        <button type="submit">
+            <span class="nav-icon">LO</span>
+            <span>Dang xuat</span>
+        </button>
+    </form>
+</aside>
+
+<header th:fragment="topbar(title)" class="admin-topbar">
+    <div class="topbar-search">
+        <span>Tim kiem</span>
+        <input type="text" placeholder="Tim kiem nhanh...">
+    </div>
+    <div class="topbar-user">
+        <div>
+            <strong>Admin EduLab</strong>
+            <small>Quan tri vien</small>
+        </div>
+        <a class="topbar-avatar" th:href="@{/profile}">A</a>
+    </div>
+</header>
+</body>
+</html>

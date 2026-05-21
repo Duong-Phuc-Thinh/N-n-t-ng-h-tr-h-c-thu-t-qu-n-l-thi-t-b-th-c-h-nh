@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ho so hoc thuat - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/student.css(v=8)}">
+</head>
+<body>
+<div class="student-shell">
+    <div th:replace="~{student/fragments/layout :: sidebar('academic-history')}"></div>
+
+    <main class="student-main">
+        <div th:replace="~{student/fragments/layout :: topbar('Ho so hoc thuat')}"></div>
+
+        <section class="student-content">
+            <header class="page-header">
+                <div>
+                    <p class="eyebrow">CORE-07</p>
+                    <h1>Ho so hoc thuat lien ket</h1>
+                    <p>Lich su tu van, danh gia cua giang vien va thiet bi duoc chi dinh muon trong cung mot dong du lieu.</p>
+                </div>
+                <div class="header-actions">
+                    <a class="secondary-button" th:href="@{/student/mentoring/history}">Lich dat tu van</a>
+                    <a class="primary-button" th:href="@{/student/mentoring/book}">Dat lich moi</a>
+                </div>
+            </header>
+
+            <section class="content-card history-section">
+                <div class="section-heading">
+                    <h2>Lich su tong hop</h2>
+                    <p>Moi ca tu van lien ket voi khoa/nganh, giang vien, ket qua danh gia va phieu muon thiet bi neu co.</p>
+                </div>
+
+                <div class="unified-history-list">
+                    <article th:each="record : ${history.unifiedHistories}" class="unified-card">
+                        <div class="unified-card-header">
+                            <div>
+                                <small th:text="${#temporals.format(record.scheduledAt, 'dd/MM/yyyy HH:mm')}">20/05/2026 08:00</small>
+                                <h3 th:text="${record.topic}">Chu de tu van</h3>
+                                <p th:text="'Giang vien: ' + ${record.lecturerName}">Giang vien</p>
+                                <p th:text="'Khoa/Nganh: ' + ${record.departmentName} + ' / ' + ${record.majorName}">Khoa/Nganh</p>
+                            </div>
+                            <div class="history-score-box">
+                                <span th:if="${record.score != null}" class="badge status-approved" th:text="'Diem ' + ${record.score}">Diem 95</span>
+                                <span th:if="${record.grade != null}" class="badge status-approved" th:text="${record.grade}">GOOD</span>
+                                <span th:if="${record.grade == null}" class="badge status-pending">Chua danh gia</span>
+                            </div>
+                        </div>
+
+                        <div class="history-note" th:if="${record.comment != null}">
+                            <strong>Nhan xet cua giang vien</strong>
+                            <p th:text="${record.comment}">Nhan xet</p>
+                        </div>
+
+                        <div class="history-equipment">
+                            <strong>Thiet bi lien ket</strong>
+                            <div th:if="${not #lists.isEmpty(record.borrowedEquipments)}" class="table-wrap">
+                                <table class="data-table compact-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Thiet bi</th>
+                                        <th>Ma</th>
+                                        <th>Danh muc</th>
+                                        <th>So luong</th>
+                                        <th>Trang thai phieu</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="eq : ${record.borrowedEquipments}">
+                                        <td th:text="${eq.equipmentName}">Thiet bi</td>
+                                        <td th:text="${eq.equipmentCode}">EQ-001</td>
+                                        <td th:text="${eq.labRoomTypeName}">Danh muc</td>
+                                        <td th:text="${eq.quantity}">1</td>
+                                        <td><span class="badge status-badge" th:text="${eq.status}">WAITING_ALLOCATION</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div th:if="${#lists.isEmpty(record.borrowedEquipments)}" class="empty-panel">
+                                Khong co thiet bi duoc chi dinh trong ca tu van nay.
+                            </div>
+                        </div>
+                    </article>
+
+                    <div th:if="${#lists.isEmpty(history.unifiedHistories)}" class="empty-panel">
+                        Chua co ho so hoc thuat nao.
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-card history-section">
+                <div class="section-heading">
+                    <h2>Bang tu van va danh gia</h2>
+                    <p>Du lieu chi tiet tu bang mentoring_sessions va academic_evaluations.</p>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Ngay gio</th>
+                            <th>Giang vien</th>
+                            <th>Khoa / Nganh</th>
+                            <th>Trang thai</th>
+                            <th>Xep loai</th>
+                            <th>Diem</th>
+                            <th>Nhan xet</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${history.mentoringHistories}">
+                            <td th:text="${#temporals.format(item.scheduledAt, 'dd/MM/yyyy HH:mm')}">20/05/2026 08:00</td>
+                            <td th:text="${item.lecturerName}">Lecturer</td>
+                            <td>
+                                <strong th:text="${item.departmentName}">Department</strong>
+                                <small th:text="${item.majorName}">Major</small>
+                            </td>
+                            <td>
+                                <span th:class="'badge status-' + ${#strings.toLowerCase(item.mentoringStatus.name())}"
+                                      th:text="${item.mentoringStatus}">PENDING</span>
+                            </td>
+                            <td th:text="${item.evaluationResult} ?: 'Chua danh gia'">GOOD</td>
+                            <td th:text="${item.score} ?: '-'">90</td>
+                            <td th:text="${item.evaluationComment} ?: '-'">Comment</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(history.mentoringHistories)}">
+                            <td colspan="7" class="empty-cell">Chua co lich su tu van.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </main>
+</div>
+</body>
+</html>

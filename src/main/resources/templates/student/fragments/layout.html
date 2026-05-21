@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar(activeMenu)" class="student-sidebar">
+    <div class="student-brand">
+        <span class="student-brand-mark">EL</span>
+        <div>
+            <strong>EduLab Nexus</strong>
+            <small>Cong sinh vien</small>
+        </div>
+    </div>
+
+    <nav class="student-nav">
+        <a th:href="@{/student/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active'">
+            <span>DB</span>
+            <strong>Tong quan</strong>
+        </a>
+        <a th:href="@{/student/mentoring/book}" th:classappend="${activeMenu == 'book'} ? 'active'">
+            <span>BK</span>
+            <strong>Dat lich co van</strong>
+        </a>
+        <a th:href="@{/student/mentoring/history}" th:classappend="${activeMenu == 'mentoring'} ? 'active'">
+            <span>HS</span>
+            <strong>Lich su dat lich</strong>
+        </a>
+        <a th:href="@{/student/academic-history}" th:classappend="${activeMenu == 'academic'} ? 'active'">
+            <span>AC</span>
+            <strong>Lich su hoc thuat</strong>
+        </a>
+        <a th:href="@{/profile}">
+            <span>PF</span>
+            <strong>Ho so ca nhan</strong>
+        </a>
+    </nav>
+
+    <form class="student-logout" th:action="@{/logout}" method="post">
+        <button type="submit">
+            <span>LO</span>
+            <strong>Dang xuat</strong>
+        </button>
+    </form>
+</aside>
+
+<header th:fragment="topbar(title)" class="student-topbar">
+    <div>
+        <strong th:text="${title}">Student</strong>
+        <small>Smart Academic & Lab Support Platform</small>
+    </div>
+    <a class="student-avatar" th:href="@{/profile}">SV</a>
+</header>
+</body>
+</html>

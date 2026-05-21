@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar(activeMenu)" class="admin-sidebar">
+    <div class="brand">
+        <span class="brand-mark">EL</span>
+        <div>
+            <strong>EduLab Nexus</strong>
+            <small>Cổng giảng viên</small>
+        </div>
+    </div>
+
+    <nav class="side-nav">
+        <a th:href="@{/lecturer/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active'">
+            <span class="nav-icon">DB</span>
+            <span>Tổng quan</span>
+        </a>
+        <a th:href="@{/lecturer/mentoring-history}" th:classappend="${activeMenu == 'mentoring'} ? 'active'">
+            <span class="nav-icon">MT</span>
+            <span>Lịch sử tư vấn</span>
+        </a>
+        <a th:href="@{/lecturer/equipment-requests/new}" th:classappend="${activeMenu == 'equipment'} ? 'active'">
+            <span class="nav-icon">EQ</span>
+            <span>Yêu cầu thiết bị</span>
+        </a>
+        <a th:href="@{/lecturer/equipment-requests}" th:classappend="${activeMenu == 'equipment-history'} ? 'active'">
+            <span class="nav-icon">HS</span>
+            <span>Lịch sử yêu cầu</span>
+        </a>
+        <a th:href="@{/profile}">
+            <span class="nav-icon">PF</span>
+            <span>Hồ sơ cá nhân</span>
+        </a>
+    </nav>
+
+    <form class="logout-form" th:action="@{/logout}" method="post">
+        <button type="submit">
+            <span class="nav-icon">LO</span>
+            <span>Đăng xuất</span>
+        </button>
+    </form>
+</aside>
+
+<header th:fragment="topbar(title)" class="admin-topbar">
+    <div class="topbar-search">
+        <span>Tìm kiếm</span>
+        <input type="text" placeholder="Tìm sinh viên, lịch tư vấn, thiết bị...">
+    </div>
+    <div class="topbar-user">
+        <div>
+            <strong>Giảng viên</strong>
+            <small>Lecturer portal</small>
+        </div>
+        <a class="topbar-avatar" th:href="@{/profile}">L</a>
+    </div>
+</header>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sửa lịch tư vấn - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=7)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{lecturer/fragments/layout :: sidebar('mentoring')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{lecturer/fragments/layout :: topbar('Sửa lịch tư vấn')}"></div>
+
+        <nav class="breadcrumb">
+            <a th:href="@{/lecturer/mentoring-history}">Lịch sử tư vấn</a>
+            <span>/</span>
+            <strong>Sửa lịch</strong>
+        </nav>
+
+        <section class="page-heading form-heading">
+            <div>
+                <h2>Sửa lịch tư vấn</h2>
+                <p>
+                    Sinh viên:
+                    <strong th:text="${sessionView.studentName}">Sinh viên</strong>
+                    -
+                    <span th:text="${sessionView.topic}">Chủ đề</span>
+                </p>
+            </div>
+        </section>
+
+        <div class="alert error-alert form-alert" th:if="${error}" th:text="${error}"></div>
+
+        <form class="equipment-form-layout"
+              th:action="@{/lecturer/mentoring-history/{id}/edit(id=${sessionView.id})}"
+              th:object="${editMentoringScheduleForm}"
+              method="post">
+            <div class="form-main-column">
+                <section class="glass-form-card">
+                    <div class="form-section-title">
+                        <span class="section-icon">M</span>
+                        <h3>Thông tin lịch tư vấn</h3>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="bookingDate">Ngày tư vấn</label>
+                            <input id="bookingDate" type="date" th:field="*{bookingDate}">
+                            <div class="field-error" th:errors="*{bookingDate}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeSlot">Khung giờ</label>
+                            <select id="timeSlot" th:field="*{timeSlot}">
+                                <option value="">-- Chọn giờ --</option>
+                                <option th:each="slot : ${timeSlots}"
+                                        th:value="${#temporals.format(slot, 'HH:mm')}"
+                                        th:text="${#temporals.format(slot, 'HH:mm')}">
+                                </option>
+                            </select>
+                            <div class="field-error" th:errors="*{timeSlot}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Địa điểm</label>
+                        <input id="location" type="text" th:field="*{location}" placeholder="Ví dụ: Phòng Lab 402">
+                        <div class="field-error" th:errors="*{location}"></div>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="form-side-column">
+                <section class="permission-card">
+                    <h3>Lưu ý</h3>
+                    <p>Không thể đặt lịch trùng khung giờ với lịch khác của cùng giảng viên. Lịch đã hoàn thành hoặc đã hủy không được sửa.</p>
+                </section>
+                <div class="form-actions">
+                    <a class="secondary-button" th:href="@{/lecturer/mentoring-history}">Hủy</a>
+                    <button class="primary-button" type="submit">Lưu lịch</button>
+                </div>
+            </aside>
+        </form>
+    </main>
+</div>
+</body>
+</html>

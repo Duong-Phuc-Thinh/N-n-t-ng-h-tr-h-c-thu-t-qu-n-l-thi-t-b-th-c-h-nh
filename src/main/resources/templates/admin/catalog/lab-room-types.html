@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Danh muc phong lab - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=7)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{admin/fragments/layout :: sidebar('lab-room-types')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{admin/fragments/layout :: topbar('Danh muc phong lab')}"></div>
+
+        <section class="page-heading">
+            <div>
+                <h2>Quan ly danh muc Phong Lab</h2>
+                <p>Quan ly loai phong lab, theo doi thiet bi lien ket va dieu huong nhanh sang kho thiet bi.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="secondary-button" th:href="@{/admin/equipments}">Quan ly thiet bi</a>
+                <a class="primary-button" href="#labRoomTypeFormCard">
+                    <span class="button-icon">+</span>
+                    Them danh muc
+                </a>
+            </div>
+        </section>
+
+        <section class="stats-grid lab-stats-grid">
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-icon blue">LAB</span>
+                    <span class="stat-pill green">He thong</span>
+                </div>
+                <span>Tong danh muc phong lab</span>
+                <strong th:text="${totalLabRoomTypes}">0</strong>
+            </article>
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-icon green">ON</span>
+                    <span class="stat-pill green">San sang</span>
+                </div>
+                <span>Danh muc dang hoat dong</span>
+                <strong th:text="${activeLabRoomTypes}">0</strong>
+            </article>
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-icon amber">FIX</span>
+                    <span class="stat-pill amber">Bao tri</span>
+                </div>
+                <span>Thiet bi dang bao tri</span>
+                <strong th:text="${maintenanceEquipments}">0</strong>
+            </article>
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-icon blue">EQ</span>
+                    <span class="stat-pill green">Lien ket</span>
+                </div>
+                <span>Tong thiet bi gan danh muc</span>
+                <strong th:text="${totalLabEquipments}">0</strong>
+            </article>
+        </section>
+
+        <div class="alert success-alert inline-alert" th:if="${success}" th:text="${success}"></div>
+        <div class="alert error-alert inline-alert" th:if="${error}" th:text="${error}"></div>
+
+        <section class="lab-management-layout">
+            <div class="lab-management-main">
+                <section class="lab-type-grid">
+                    <article class="lab-type-card" th:each="type : ${labRoomTypes}">
+                        <div class="lab-type-head">
+                            <span class="equipment-avatar" th:text="${#strings.substring(type.name(),0,1)}">L</span>
+                            <span th:class="${type.active()} ? 'badge active-badge' : 'badge inactive-badge'"
+                                  th:text="${type.active()} ? 'ACTIVE' : 'INACTIVE'">ACTIVE</span>
+                        </div>
+                        <h3 th:text="${type.name()}">Phong may tinh</h3>
+                        <p th:text="${type.description()} ?: 'Chua co mo ta'">Mo ta</p>
+                        <div class="lab-type-meta">
+                            <div>
+                                <small>Ma danh muc</small>
+                                <strong th:text="${type.code()}">COMPUTER</strong>
+                            </div>
+                            <div>
+                                <small>Thiet bi</small>
+                                <strong th:text="${type.equipmentCount()}">0</strong>
+                            </div>
+                            <div>
+                                <small>Kha dung</small>
+                                <strong th:text="|${type.availableQuantity()}/${type.totalQuantity()}|">0/0</strong>
+                            </div>
+                        </div>
+                        <div class="lab-card-actions">
+                            <a class="secondary-button" th:href="@{/admin/equipments(labRoomTypeId=${type.id()})}">Xem thiet bi</a>
+                            <a class="icon-button" th:href="@{/admin/catalog/lab-room-types/{id}/edit(id=${type.id()})}">Sua</a>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="equipment-panel lab-table-panel">
+                    <div class="equipment-toolbar">
+                        <div>
+                            <h3>Bang danh muc phong lab</h3>
+                            <p th:text="'Hien co ' + ${#lists.size(labRoomTypes)} + ' danh muc phong lab'">Danh muc</p>
+                        </div>
+                        <div class="toolbar-search">
+                            <span>Tim kiem</span>
+                            <input id="labSearch" type="text" placeholder="Ten phong lab hoac ma danh muc">
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="edulab-table lab-room-table" id="labTable">
+                            <thead>
+                            <tr>
+                                <th>Danh muc phong lab</th>
+                                <th>Mo ta</th>
+                                <th class="number-cell">Thiet bi</th>
+                                <th class="number-cell">Dang dung</th>
+                                <th class="number-cell">Bao tri</th>
+                                <th>Trang thai</th>
+                                <th class="action-cell">Thao tac</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="type : ${labRoomTypes}">
+                                <td>
+                                    <div class="equipment-name-cell">
+                                        <span class="equipment-avatar" th:text="${#strings.substring(type.name(),0,1)}">L</span>
+                                        <div>
+                                            <strong th:text="${type.name()}">Phong may tinh</strong>
+                                            <small class="mono" th:text="${type.code()}">COMPUTER</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="description-cell" th:text="${type.description()} ?: '-'">Mo ta</td>
+                                <td class="number-cell" th:text="${type.equipmentCount()}">0</td>
+                                <td class="number-cell" th:text="${type.activeEquipmentCount()}">0</td>
+                                <td class="number-cell" th:text="${type.maintenanceEquipmentCount()}">0</td>
+                                <td>
+                                    <span th:class="${type.active()} ? 'badge active-badge' : 'badge inactive-badge'"
+                                          th:text="${type.active()} ? 'ACTIVE' : 'INACTIVE'">ACTIVE</span>
+                                </td>
+                                <td class="action-cell">
+                                    <div class="icon-actions">
+                                        <a class="icon-button" th:href="@{/admin/equipments(labRoomTypeId=${type.id()})}">TB</a>
+                                        <a class="icon-button" th:href="@{/admin/catalog/lab-room-types/{id}/edit(id=${type.id()})}">Sua</a>
+                                        <form th:if="${type.active()}"
+                                              th:action="@{/admin/catalog/lab-room-types/{id}/disable(id=${type.id()})}"
+                                              method="post">
+                                            <button class="icon-button danger-icon" type="submit">Tat</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(labRoomTypes)}">
+                                <td colspan="7" class="empty-cell">Chua co danh muc phong lab nao.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="lab-management-side">
+                <section class="form-card" id="labRoomTypeFormCard">
+                    <div class="section-heading">
+                        <h3>Thong tin danh muc</h3>
+                        <p>Danh muc nay duoc dung khi tao thiet bi va loc kho thiet bi.</p>
+                    </div>
+                    <form th:action="@{${labRoomTypeFormAction}}" th:object="${labRoomTypeForm}" method="post">
+                        <div class="form-group">
+                            <label for="labCode">Ma danh muc</label>
+                            <input id="labCode" th:field="*{code}" type="text" placeholder="VD: COMPUTER">
+                            <div class="field-error" th:errors="*{code}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="labName">Ten danh muc phong lab</label>
+                            <input id="labName" th:field="*{name}" type="text" placeholder="VD: Phong may tinh">
+                            <div class="field-error" th:errors="*{name}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="labDescription">Mo ta</label>
+                            <textarea id="labDescription"
+                                      th:field="*{description}"
+                                      rows="5"
+                                      placeholder="Mo ta muc dich su dung, loai thiet bi chinh hoac quy chuan phong lab"></textarea>
+                        </div>
+                        <label class="switch-row">
+                            <input th:field="*{active}" type="checkbox">
+                            <span>Danh muc dang hoat dong</span>
+                        </label>
+                        <div class="form-actions">
+                            <a class="secondary-button" th:href="@{/admin/catalog/lab-room-types}">Lam moi</a>
+                            <button class="primary-button" type="submit">Luu danh muc</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="permission-card">
+                    <h3>Luong du lieu</h3>
+                    <p>Khi tao thiet bi moi, truong “Loai phong Lab” lay truc tiep tu danh muc nay. Nut “Xem thiet bi” se loc danh sach thiet bi theo dung danh muc da chon.</p>
+                </section>
+            </aside>
+        </section>
+    </main>
+</div>
+
+<script>
+    const labSearch = document.getElementById('labSearch');
+    const labRows = document.querySelectorAll('#labTable tbody tr');
+
+    if (labSearch) {
+        labSearch.addEventListener('input', function () {
+            const keyword = this.value.toLowerCase().trim();
+            labRows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none';
+            });
+        });
+    }
+</script>
+</body>
+</html>

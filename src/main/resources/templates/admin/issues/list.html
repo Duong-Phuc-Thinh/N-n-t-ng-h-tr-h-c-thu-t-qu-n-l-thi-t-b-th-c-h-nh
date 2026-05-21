@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phiếu chờ cấp phát - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=5)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{admin/fragments/layout :: sidebar('issues')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{admin/fragments/layout :: topbar('Phiếu chờ cấp phát')}"></div>
+
+        <section class="page-heading">
+            <div>
+                <h2>Phiếu chờ cấp phát</h2>
+                <p>Quản lý và xác nhận các yêu cầu mượn thiết bị phòng lab đang chờ cấp phát.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="secondary-button" th:href="@{/admin/equipments}">Kho thiết bị</a>
+                <button class="primary-button" type="button">Xuất báo cáo</button>
+            </div>
+        </section>
+
+        <div class="alert success-alert inline-alert" th:if="${success}" th:text="${success}"></div>
+        <div class="alert error-alert inline-alert" th:if="${error}" th:text="${error}"></div>
+
+        <section class="allocation-layout" th:if="${!#lists.isEmpty(records)}">
+            <aside class="request-list-card">
+                <div class="request-list-header">
+                    <h3>Danh sách yêu cầu</h3>
+                    <span th:text="${#lists.size(records)} + ' phiếu'">0 phiếu</span>
+                </div>
+
+                <a th:each="record, iter : ${records}"
+                   th:href="'#record-' + ${record.id}"
+                   th:class="${iter.first} ? 'request-item active' : 'request-item'">
+                    <div class="request-topline">
+                        <strong th:text="'#REQ-' + ${record.id}">#REQ-1</strong>
+                        <span th:class="${record.issuable} ? 'request-priority normal' : 'request-priority urgent'"
+                              th:text="${record.issuable} ? 'Sẵn sàng' : 'Thiếu kho'">Sẵn sàng</span>
+                    </div>
+                    <p th:text="${record.purpose}">Thực hành vi mạch</p>
+                    <small th:text="${record.studentName}">Sinh viên</small>
+                    <div class="request-footer">
+                        <span th:text="${#temporals.format(record.borrowDate, 'dd/MM/yyyy')}">20/05/2026</span>
+                        <strong th:text="${#lists.size(record.details)} + ' thiết bị'">0 thiết bị</strong>
+                    </div>
+                </a>
+            </aside>
+
+            <div class="allocation-detail-column">
+                <article class="allocation-detail-card"
+                         th:each="record : ${records}"
+                         th:id="'record-' + ${record.id}">
+                    <header class="allocation-detail-header">
+                        <div>
+                            <div class="record-meta">
+                                <span th:text="'#REQ-' + ${record.id}">#REQ-1</span>
+                                <small th:text="'Ngày mượn ' + ${#temporals.format(record.borrowDate, 'dd/MM/yyyy')}">
+                                    Ngày mượn
+                                </small>
+                            </div>
+                            <h3 th:text="${record.purpose}">Mục đích mượn thiết bị</h3>
+                        </div>
+                        <span th:class="${record.issuable} ? 'badge active-badge' : 'badge inactive-badge'"
+                              th:text="${record.issuable} ? 'ĐỦ KHO' : 'THIẾU KHO'">ĐỦ KHO</span>
+                    </header>
+
+                    <div class="allocation-info-grid">
+                        <div>
+                            <span class="info-icon">ST</span>
+                            <p>Người yêu cầu</p>
+                            <strong th:text="${record.studentName}">Nguyễn Văn A</strong>
+                        </div>
+                        <div>
+                            <span class="info-icon">BR</span>
+                            <p>Ngày mượn</p>
+                            <strong th:text="${#temporals.format(record.borrowDate, 'dd/MM/yyyy')}">20/05/2026</strong>
+                        </div>
+                        <div>
+                            <span class="info-icon">RT</span>
+                            <p>Ngày trả dự kiến</p>
+                            <strong th:text="${#temporals.format(record.expectedReturnDate, 'dd/MM/yyyy')}">22/05/2026</strong>
+                        </div>
+                    </div>
+
+                    <div class="allocation-table-wrap">
+                        <h4>Danh sách thiết bị yêu cầu</h4>
+                        <table class="edulab-table allocation-table">
+                            <thead>
+                            <tr>
+                                <th>Mã TB</th>
+                                <th>Tên thiết bị</th>
+                                <th class="number-cell">Số lượng</th>
+                                <th>Tình trạng kho</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="detail : ${record.details}">
+                                <td class="mono" th:text="${detail.equipmentCode}">EQ-001</td>
+                                <td>
+                                    <div class="equipment-name-cell">
+                                        <span class="equipment-avatar" th:text="${#strings.substring(detail.equipmentName,0,1)}">E</span>
+                                        <div>
+                                            <strong th:text="${detail.equipmentName}">Thiết bị</strong>
+                                            <small th:text="'Khả dụng: ' + ${detail.availableQuantity}">Khả dụng</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="number-cell" th:text="${detail.requestedQuantity}">1</td>
+                                <td>
+                                    <span th:class="${detail.enoughStock} ? 'badge active-badge' : 'badge inactive-badge'"
+                                          th:text="${detail.enoughStock} ? 'Sẵn sàng' : 'Thiếu hàng'">Sẵn sàng</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <footer class="allocation-actions">
+                        <div class="stock-note">
+                            <span th:text="${record.issuable} ? '✓' : '!'">✓</span>
+                            <p th:text="${record.issuable} ? 'Toàn bộ thiết bị đều có sẵn trong kho.' : 'Một số thiết bị chưa đủ số lượng, không thể xuất kho.'">
+                                Toàn bộ thiết bị đều có sẵn trong kho.
+                            </p>
+                        </div>
+                        <form th:action="@{/admin/issues/confirm}" method="post">
+                            <input type="hidden" name="borrowingRecordId" th:value="${record.id}">
+                            <button class="primary-button" type="submit">Xác nhận xuất kho</button>
+                        </form>
+                    </footer>
+                </article>
+            </div>
+        </section>
+
+        <section th:if="${#lists.isEmpty(records)}" class="empty-panel large-empty">
+            Không có phiếu nào đang chờ cấp phát.
+        </section>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Giang vien - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=7)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{lecturer/fragments/layout :: sidebar('dashboard')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{lecturer/fragments/layout :: topbar('Tong quan giang vien')}"></div>
+
+        <section class="page-heading">
+            <div>
+                <h2>Chao mung, <span th:text="${loginUser.fullName}">Giang vien</span></h2>
+                <p>So lieu lay theo dung giang vien dang dang nhap: lich sinh vien dat, ca da tiep nhan va thiet bi da chi dinh.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="primary-button" th:href="@{/lecturer/equipment-requests/new}">
+                    <span class="button-icon">+</span>
+                    Tao yeu cau thiet bi
+                </a>
+            </div>
+        </section>
+
+        <div class="equipment-stats">
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon amber">PD</span>
+                    <span class="stat-pill amber">Can tiep nhan</span>
+                </div>
+                <p>Ca tu van cho xac nhan</p>
+                <strong th:text="${dashboard.pendingMentoringCount}">0</strong>
+            </article>
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon blue">AP</span>
+                    <span class="stat-pill green">Da tiep nhan</span>
+                </div>
+                <p>Ca cho danh gia</p>
+                <strong th:text="${dashboard.approvedMentoringCount}">0</strong>
+            </article>
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon green">OK</span>
+                    <span class="stat-pill green">Hoan thanh</span>
+                </div>
+                <p>Ca da danh gia</p>
+                <strong th:text="${dashboard.completedMentoringCount}">0</strong>
+            </article>
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon blue">EQ</span>
+                    <span class="stat-pill green">Lien ket</span>
+                </div>
+                <p>Phieu thiet bi da chi dinh</p>
+                <strong th:text="${dashboard.linkedEquipmentRequestCount}">0</strong>
+            </article>
+        </div>
+
+        <section class="dashboard-grid">
+            <article class="dashboard-card wide">
+                <div class="section-heading">
+                    <h3>Ca tu van can xu ly</h3>
+                    <p>Chi hien sinh vien dat lich voi giang vien dang dang nhap.</p>
+                </div>
+                <div th:if="${#lists.isEmpty(dashboard.actionMentorings)}" class="empty-panel">
+                    Khong co ca tu van dang cho xu ly.
+                </div>
+                <table th:if="${!#lists.isEmpty(dashboard.actionMentorings)}" class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Ngay gio</th>
+                        <th>Sinh vien</th>
+                        <th>Khoa / nganh</th>
+                        <th>Chu de</th>
+                        <th>Trang thai</th>
+                        <th>Thao tac</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="booking : ${dashboard.actionMentorings}">
+                        <td>
+                            <strong th:text="${#temporals.format(booking.scheduledAt, 'dd/MM/yyyy')}">21/05/2026</strong>
+                            <small th:text="${#temporals.format(booking.scheduledAt, 'HH:mm')}">08:00</small>
+                        </td>
+                        <td th:text="${booking.studentName}">Sinh vien</td>
+                        <td>
+                            <strong th:text="${booking.departmentName}">Khoa</strong>
+                            <small th:text="${booking.majorName}">Nganh</small>
+                        </td>
+                        <td th:text="${booking.topic}">Chu de</td>
+                        <td><span class="status-badge" th:text="${booking.status}">PENDING</span></td>
+                        <td>
+                            <form th:if="${booking.status.name() == 'PENDING'}"
+                                  th:action="@{/lecturer/mentoring-history/{id}/accept(id=${booking.id})}"
+                                  method="post">
+                                <button class="secondary-button" type="submit">Tiep nhan</button>
+                            </form>
+                            <a th:if="${booking.status.name() == 'APPROVED'}"
+                               class="secondary-button"
+                               th:href="@{/lecturer/mentoring-history/{id}/complete(id=${booking.id})}">Danh gia</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="section-heading">
+                    <h3>Tac vu nhanh</h3>
+                    <p>Cac chuc nang chinh danh cho giang vien.</p>
+                </div>
+                <div class="quick-links">
+                    <a th:href="@{/lecturer/mentoring-history}">Lich su tu van</a>
+                    <a th:href="@{/lecturer/equipment-requests/new}">Yeu cau cap phat thiet bi</a>
+                    <a th:href="@{/lecturer/equipment-requests}">Lich su yeu cau thiet bi</a>
+                    <a th:href="@{/profile}">Ho so ca nhan</a>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
+</body>
+</html>

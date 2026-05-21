@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hoan thanh buoi tu van - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=8)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{lecturer/fragments/layout :: sidebar('mentoring')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{lecturer/fragments/layout :: topbar('Hoan thanh buoi tu van')}"></div>
+
+        <nav class="breadcrumb">
+            <a th:href="@{/lecturer/mentoring-history}">Lich su tu van</a>
+            <span>/</span>
+            <strong>Danh gia sinh vien</strong>
+        </nav>
+
+        <section class="page-heading form-heading">
+            <div>
+                <h2>Danh gia buoi tu van</h2>
+                <p>
+                    Sinh vien:
+                    <strong th:text="${sessionView.studentName}">Sinh vien</strong>
+                    -
+                    <span th:text="${sessionView.departmentName}">Khoa</span>
+                    /
+                    <span th:text="${sessionView.majorName}">Nganh</span>
+                </p>
+            </div>
+            <div class="heading-actions">
+                <a class="secondary-button" th:href="@{/lecturer/mentoring-history}">Quay lai</a>
+            </div>
+        </section>
+
+        <div class="alert error-alert form-alert" th:if="${error}" th:text="${error}"></div>
+
+        <form class="equipment-form-layout"
+              method="post"
+              th:action="@{/lecturer/mentoring-history/{id}/complete(id=${sessionView.id})}"
+              th:object="${completeMentoringForm}">
+            <div class="form-main-column">
+                <section class="glass-form-card">
+                    <div class="form-section-title">
+                        <span class="section-icon">EV</span>
+                        <h3>Ket qua danh gia</h3>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="grade">Xep loai</label>
+                            <select id="grade" th:field="*{grade}">
+                                <option th:each="grade : ${grades}"
+                                        th:value="${grade}"
+                                        th:text="${grade}">GOOD</option>
+                            </select>
+                            <div class="field-error" th:errors="*{grade}"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Trang thai hien tai</label>
+                            <input type="text" th:value="${sessionView.status}" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comment">Noi dung tu van va nhan xet</label>
+                        <textarea id="comment"
+                                  rows="10"
+                                  th:field="*{comment}"
+                                  placeholder="Nhap noi dung da tu van, van de cua sinh vien va huong xu ly tiep theo..."></textarea>
+                        <div class="field-error" th:errors="*{comment}"></div>
+                    </div>
+                </section>
+
+                <section class="glass-form-card equipment-pick-card">
+                    <div class="form-section-title">
+                        <span class="section-icon">EQ</span>
+                        <h3>Chon thiet bi tu danh muc phong lab</h3>
+                    </div>
+                    <p class="muted-text">
+                        Thiet bi duoc lay tu danh muc phong lab. Khi luu, he thong tao phieu muon lien ket voi ca tu van trong cung transaction.
+                    </p>
+
+                    <div class="table-wrap">
+                        <table class="edulab-table compact-table">
+                            <thead>
+                            <tr>
+                                <th>Chon</th>
+                                <th>Thiet bi</th>
+                                <th>Danh muc</th>
+                                <th class="number-cell">Kha dung</th>
+                                <th class="number-cell">So luong</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item, stat : *{items}">
+                                <td>
+                                    <input type="hidden" th:field="*{items[__${stat.index}__].equipmentId}">
+                                    <input type="hidden" th:field="*{items[__${stat.index}__].name}">
+                                    <input type="hidden" th:field="*{items[__${stat.index}__].labRoomTypeName}">
+                                    <input type="hidden" th:field="*{items[__${stat.index}__].availableQuantity}">
+                                    <input type="checkbox"
+                                           th:field="*{items[__${stat.index}__].selected}"
+                                           th:disabled="${item.availableQuantity == null || item.availableQuantity <= 0}">
+                                </td>
+                                <td>
+                                    <strong th:text="${item.name}">Ten thiet bi</strong>
+                                </td>
+                                <td th:text="${item.labRoomTypeName}">Danh muc</td>
+                                <td class="number-cell" th:text="${item.availableQuantity}">0</td>
+                                <td class="number-cell">
+                                    <input class="quantity-input"
+                                           type="number"
+                                           min="0"
+                                           th:max="${item.availableQuantity}"
+                                           th:disabled="${item.availableQuantity == null || item.availableQuantity <= 0}"
+                                           th:field="*{items[__${stat.index}__].quantity}">
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(completeMentoringForm.items)}">
+                                <td colspan="5" class="empty-cell">Chua co thiet bi kha dung.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="form-side-column">
+                <section class="permission-card">
+                    <h3>Thong tin lich</h3>
+                    <p><strong th:text="${sessionView.studentName}">Sinh vien</strong></p>
+                    <p>
+                        <span th:text="${#temporals.format(sessionView.scheduledAt, 'dd/MM/yyyy HH:mm')}">20/05/2026 08:00</span>
+                        <span th:text="' - ' + ${sessionView.durationMinutes} + ' phut'"> - 60 phut</span>
+                    </p>
+                    <p th:text="${sessionView.location} ?: 'Lecturer office'">Lecturer office</p>
+                    <p th:text="${sessionView.topic}">Chu de</p>
+                    <p th:text="${sessionView.description} ?: 'Chua co mo ta chi tiet'">Mo ta lich tu van</p>
+                </section>
+
+                <section class="permission-card">
+                    <h3>Luu y transaction</h3>
+                    <p>Neu danh gia hoac thiet bi khong hop le, toan bo giao dich se bi huy va khong tao du lieu le.</p>
+                </section>
+
+                <div class="form-actions">
+                    <a class="secondary-button" th:href="@{/lecturer/mentoring-history}">Huy</a>
+                    <button class="primary-button" type="submit">Luu danh gia</button>
+                </div>
+            </aside>
+        </form>
+    </main>
+</div>
+</body>
+</html>

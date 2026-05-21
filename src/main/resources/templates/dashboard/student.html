@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sinh vien - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=7)}">
+</head>
+<body>
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="brand">
+            <span class="brand-mark">EL</span>
+            <div>
+                <strong>EduLab Nexus</strong>
+                <small>Cong sinh vien</small>
+            </div>
+        </div>
+
+        <nav class="side-nav">
+            <a class="active" th:href="@{/student/dashboard}">
+                <span class="nav-icon">DB</span>
+                <span>Tong quan</span>
+            </a>
+            <a th:href="@{/student/mentoring}">
+                <span class="nav-icon">MT</span>
+                <span>Lich co van</span>
+            </a>
+            <a th:href="@{/student/academic-history}">
+                <span class="nav-icon">AC</span>
+                <span>Ho so hoc thuat</span>
+            </a>
+            <a th:href="@{/profile}">
+                <span class="nav-icon">PF</span>
+                <span>Ho so ca nhan</span>
+            </a>
+        </nav>
+
+        <form class="logout-form" th:action="@{/logout}" method="post">
+            <button type="submit">
+                <span class="nav-icon">LO</span>
+                <span>Dang xuat</span>
+            </button>
+        </form>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-search">
+                <span>Tim kiem</span>
+                <input type="text" placeholder="Tim lich co van, thiet bi, ho so...">
+            </div>
+            <div class="topbar-user">
+                <div>
+                    <strong th:text="${loginUser.fullName}">Sinh vien</strong>
+                    <small th:text="${loginUser.email}">student@edulab.vn</small>
+                </div>
+                <a class="topbar-avatar" th:href="@{/profile}" th:text="${#strings.substring(loginUser.fullName,0,1)}">S</a>
+            </div>
+        </header>
+
+        <section class="page-heading">
+            <div>
+                <h2>Chao mung, <span th:text="${loginUser.fullName}">Sinh vien</span></h2>
+                <p>So lieu ben duoi lay truc tiep tu lich co van va phieu muon thiet bi cua tai khoan hien tai.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="primary-button" th:href="@{/student/mentoring/book}">
+                    <span class="button-icon">+</span>
+                    Dat lich co van
+                </a>
+            </div>
+        </section>
+
+        <div class="equipment-stats">
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon blue">UP</span>
+                    <span class="stat-pill green">Dang mo</span>
+                </div>
+                <p>Lich sap toi</p>
+                <strong th:text="${dashboard.upcomingMentoringCount}">0</strong>
+            </article>
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon amber">PD</span>
+                    <span class="stat-pill amber">Cho GV</span>
+                </div>
+                <p>Cho xac nhan</p>
+                <strong th:text="${dashboard.pendingMentoringCount}">0</strong>
+            </article>
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon green">OK</span>
+                    <span class="stat-pill green">Da xong</span>
+                </div>
+                <p>Buoi tu van hoan thanh</p>
+                <strong th:text="${dashboard.completedMentoringCount}">0</strong>
+            </article>
+            <article class="glass-stat">
+                <div class="stat-top">
+                    <span class="stat-icon blue">EQ</span>
+                    <span class="stat-pill" th:classappend="${dashboard.overdueBorrowingRecordCount > 0} ? ' red' : ' green'"
+                          th:text="${dashboard.overdueBorrowingRecordCount > 0 ? 'Qua han: ' + dashboard.overdueBorrowingRecordCount : 'Dung han'}">Dung han</span>
+                </div>
+                <p>Thiet bi dang muon</p>
+                <strong th:text="${dashboard.activeBorrowedQuantity}">0</strong>
+            </article>
+        </div>
+
+        <section class="dashboard-grid">
+            <article class="dashboard-card">
+                <div class="section-heading">
+                    <h3>Lich co van sap toi</h3>
+                    <p>Chi hien lich cua sinh vien dang dang nhap.</p>
+                </div>
+                <div th:if="${#lists.isEmpty(dashboard.upcomingMentorings)}" class="empty-panel">
+                    Chua co lich co van sap toi.
+                </div>
+                <table th:if="${!#lists.isEmpty(dashboard.upcomingMentorings)}" class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Ngay gio</th>
+                        <th>Giang vien</th>
+                        <th>Khoa / nganh</th>
+                        <th>Chu de</th>
+                        <th>Trang thai</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="booking : ${dashboard.upcomingMentorings}">
+                        <td>
+                            <strong th:text="${#temporals.format(booking.scheduledAt, 'dd/MM/yyyy')}">21/05/2026</strong>
+                            <small th:text="${#temporals.format(booking.scheduledAt, 'HH:mm')}">08:00</small>
+                        </td>
+                        <td th:text="${booking.lecturerName}">Giang vien</td>
+                        <td>
+                            <strong th:text="${booking.departmentName}">Khoa</strong>
+                            <small th:text="${booking.majorName}">Nganh</small>
+                        </td>
+                        <td th:text="${booking.topic}">Chu de</td>
+                        <td><span class="status-badge" th:text="${booking.status}">PENDING</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="section-heading">
+                    <h3>Dieu huong nhanh</h3>
+                    <p>Cac luong chinh cua sinh vien.</p>
+                </div>
+                <div class="quick-links">
+                    <a th:href="@{/student/mentoring/book}">Dat lich co van moi</a>
+                    <a th:href="@{/student/mentoring}">Xem lich su dat lich</a>
+                    <a th:href="@{/student/academic-history}">Xem ho so hoc thuat</a>
+                    <a th:href="@{/profile}">Cap nhat ho so</a>
+                </div>
+            </article>
+        </section>
+
+        <section class="dashboard-card" style="margin-top: 20px;">
+            <div class="section-heading">
+                <h3>Thiet bi dang muon</h3>
+                <p>Du lieu lay tu phieu muon thiet bi lien ket voi sinh vien nay.</p>
+            </div>
+            <div th:if="${#lists.isEmpty(dashboard.activeBorrowings)}" class="empty-panel">
+                Chua co thiet bi dang muon.
+            </div>
+            <table th:if="${!#lists.isEmpty(dashboard.activeBorrowings)}" class="data-table">
+                <thead>
+                <tr>
+                    <th>Thiet bi</th>
+                    <th>Ma</th>
+                    <th>So luong</th>
+                    <th>Ngay muon</th>
+                    <th>Han tra</th>
+                    <th>Trang thai</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${dashboard.activeBorrowings}">
+                    <td th:text="${item.equipmentName}">Thiet bi</td>
+                    <td><code th:text="${item.equipmentCode}">EQ-001</code></td>
+                    <td th:text="${item.quantity}">1</td>
+                    <td th:text="${#temporals.format(item.borrowDate, 'dd/MM/yyyy')}">21/05/2026</td>
+                    <td th:text="${#temporals.format(item.expectedReturnDate, 'dd/MM/yyyy')}">04/06/2026</td>
+                    <td><span class="status-badge" th:text="${item.borrowingStatus}">ISSUED</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lịch sử yêu cầu thiết bị - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=7)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{lecturer/fragments/layout :: sidebar('equipment-history')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{lecturer/fragments/layout :: topbar('Lịch sử yêu cầu thiết bị')}"></div>
+
+        <section class="page-heading">
+            <div>
+                <h2>Lịch sử yêu cầu thiết bị</h2>
+                <p>Theo dõi kết quả các phiếu yêu cầu thiết bị sau khi admin xử lý.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="primary-button" th:href="@{/lecturer/equipment-requests/new}">Tạo yêu cầu mới</a>
+            </div>
+        </section>
+
+        <div class="alert success-alert inline-alert" th:if="${success}" th:text="${success}"></div>
+
+        <section class="equipment-panel">
+            <div class="equipment-toolbar">
+                <div>
+                    <h3>Phiếu yêu cầu đã gửi</h3>
+                    <p th:text="'Tổng cộng ' + ${#lists.size(requests)} + ' phiếu yêu cầu'">Tổng cộng 0 phiếu</p>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="edulab-table">
+                    <thead>
+                    <tr>
+                        <th>Mã phiếu</th>
+                        <th>Mục đích</th>
+                        <th>Thiết bị</th>
+                        <th>Ngày mượn</th>
+                        <th>Ngày trả</th>
+                        <th>Kết quả</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="request : ${requests}">
+                        <td class="mono" th:text="'#REQ-' + ${request.id}">#REQ-1</td>
+                        <td>
+                            <strong th:text="${request.purpose}">Mục đích</strong>
+                            <small th:text="${request.note} ?: 'Không có ghi chú'">Ghi chú</small>
+                        </td>
+                        <td>
+                            <div th:each="detail : ${request.details}" class="request-detail-line">
+                                <strong th:text="${detail.equipmentName}">Thiết bị</strong>
+                                <small>
+                                    <span th:text="${detail.equipmentCode}">EQ-001</span>
+                                    <span th:text="' - SL: ' + ${detail.requestedQuantity}"> - SL: 1</span>
+                                </small>
+                            </div>
+                        </td>
+                        <td th:text="${#temporals.format(request.borrowDate, 'dd/MM/yyyy')}">20/05/2026</td>
+                        <td th:text="${#temporals.format(request.expectedReturnDate, 'dd/MM/yyyy')}">22/05/2026</td>
+                        <td>
+                            <span th:class="${request.statusCssClass}"
+                                  th:text="${request.statusLabel}">
+                                DANG CHO ADMIN
+                            </span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(requests)}">
+                        <td colspan="6" class="empty-cell">Chưa có yêu cầu thiết bị nào.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

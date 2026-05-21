@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Khoa va Nganh - EduLab Nexus</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=6)}">
+</head>
+<body>
+<div class="admin-shell">
+    <div th:replace="~{admin/fragments/layout :: sidebar('departments')}"></div>
+
+    <main class="admin-main">
+        <div th:replace="~{admin/fragments/layout :: topbar('Khoa va Nganh')}"></div>
+
+        <section class="page-heading">
+            <div>
+                <h2>Quan ly Khoa &amp; Nganh dao tao</h2>
+                <p>Quan ly cau truc hoc thuat, danh sach khoa va cac nganh truc thuoc tung khoa.</p>
+            </div>
+            <div class="heading-actions">
+                <a class="secondary-button" th:href="@{/admin/catalog/lab-room-types}">Danh muc phong lab</a>
+                <a class="primary-button" href="#departmentFormCard">
+                    <span class="button-icon">+</span>
+                    Them khoa
+                </a>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span>Tong so khoa</span>
+                <strong th:text="${stats.departmentCount()}">0</strong>
+            </article>
+            <article class="stat-card">
+                <span>Khoa dang hoat dong</span>
+                <strong th:text="${stats.activeDepartmentCount()}">0</strong>
+            </article>
+            <article class="stat-card">
+                <span>Tong so nganh</span>
+                <strong th:text="${stats.majorCount()}">0</strong>
+            </article>
+            <article class="stat-card">
+                <span>Giang vien</span>
+                <strong th:text="${stats.lecturerCount()}">0</strong>
+            </article>
+        </section>
+
+        <div class="alert success-alert inline-alert" th:if="${success}" th:text="${success}"></div>
+        <div class="alert error-alert inline-alert" th:if="${error}" th:text="${error}"></div>
+
+        <section class="catalog-layout">
+            <div class="catalog-main">
+                <section class="equipment-panel">
+                    <div class="equipment-toolbar">
+                        <div>
+                            <h3>Danh sach khoa</h3>
+                            <p th:text="'Hien co ' + ${#lists.size(departments)} + ' khoa trong he thong'">Danh sach khoa</p>
+                        </div>
+                        <div class="toolbar-search">
+                            <span>Tim kiem</span>
+                            <input id="departmentSearch" type="text" placeholder="Ma khoa, ten khoa, truong khoa">
+                        </div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table class="edulab-table catalog-table" id="departmentTable">
+                            <thead>
+                            <tr>
+                                <th>Ma khoa</th>
+                                <th>Ten khoa</th>
+                                <th>Phu trach</th>
+                                <th class="number-cell">Nganh</th>
+                                <th class="number-cell">Giang vien</th>
+                                <th>Trang thai</th>
+                                <th class="action-cell">Thao tac</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="department : ${departments}">
+                                <tr class="department-row" th:data-detail="'department-' + ${department.id()}">
+                                    <td class="mono" th:text="${department.code()}">CNTT</td>
+                                    <td>
+                                        <div class="equipment-name-cell">
+                                            <span class="equipment-avatar" th:text="${#strings.substring(department.name(),0,1)}">K</span>
+                                            <div>
+                                                <strong th:text="${department.name()}">Khoa Cong nghe thong tin</strong>
+                                                <small th:text="${department.description()} ?: 'Chua co mo ta'">Mo ta</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:text="${department.headLecturerName()}">Chua gan</td>
+                                    <td class="number-cell" th:text="${department.majorCount()}">0</td>
+                                    <td class="number-cell" th:text="${department.lecturerCount()}">0</td>
+                                    <td>
+                                        <span th:class="${department.active()} ? 'badge active-badge' : 'badge inactive-badge'"
+                                              th:text="${department.active()} ? 'ACTIVE' : 'INACTIVE'">ACTIVE</span>
+                                    </td>
+                                    <td class="action-cell">
+                                        <div class="icon-actions">
+                                            <a class="icon-button" th:href="@{/admin/catalog/departments/{id}/edit(id=${department.id()})}">Sua</a>
+                                            <button class="icon-button detail-toggle" type="button"
+                                                    th:data-detail="'department-' + ${department.id()}">Nganh</button>
+                                            <form th:if="${department.active()}"
+                                                  th:action="@{/admin/catalog/departments/{id}/disable(id=${department.id()})}"
+                                                  method="post">
+                                                <button class="icon-button danger-icon" type="submit">Tat</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="department-detail-row" th:id="'department-' + ${department.id()}">
+                                    <td colspan="7">
+                                        <div class="major-grid">
+                                            <article class="major-card" th:each="major : ${department.majors()}">
+                                                <div>
+                                                    <strong th:text="${major.name()}">Ky thuat phan mem</strong>
+                                                    <small th:text="'Ma nganh: ' + ${major.code()}">Ma nganh</small>
+                                                    <p th:text="${major.description()} ?: 'Chua co mo ta'">Mo ta</p>
+                                                </div>
+                                                <div class="major-actions">
+                                                    <span th:class="${major.active()} ? 'badge active-badge' : 'badge inactive-badge'"
+                                                          th:text="${major.active()} ? 'ACTIVE' : 'INACTIVE'">ACTIVE</span>
+                                                    <a class="icon-button" th:href="@{/admin/catalog/majors/{id}/edit(id=${major.id()})}">Sua</a>
+                                                </div>
+                                            </article>
+                                            <div class="empty-panel" th:if="${#lists.isEmpty(department.majors())}">
+                                                Khoa nay chua co nganh dao tao.
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            <tr th:if="${#lists.isEmpty(departments)}">
+                                <td colspan="7" class="empty-cell">Chua co khoa nao.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="content-card major-list-panel">
+                    <div class="section-heading">
+                        <h3>Tat ca nganh dao tao</h3>
+                        <p>Danh sach nganh duoc lien ket truc tiep voi khoa chu quan.</p>
+                    </div>
+                    <div class="major-list">
+                        <article class="major-row" th:each="major : ${majors}">
+                            <div>
+                                <strong th:text="${major.name()}">Ten nganh</strong>
+                                <small th:text="${major.departmentName()} + ' - ' + ${major.code()}">Khoa - Ma</small>
+                            </div>
+                            <div class="row-actions">
+                                <span th:class="${major.active()} ? 'badge active-badge' : 'badge inactive-badge'"
+                                      th:text="${major.active()} ? 'ACTIVE' : 'INACTIVE'">ACTIVE</span>
+                                <a class="icon-button" th:href="@{/admin/catalog/majors/{id}/edit(id=${major.id()})}">Sua</a>
+                                <form th:if="${major.active()}" th:action="@{/admin/catalog/majors/{id}/disable(id=${major.id()})}" method="post">
+                                    <button class="icon-button danger-icon" type="submit">Tat</button>
+                                </form>
+                            </div>
+                        </article>
+                        <div class="empty-panel" th:if="${#lists.isEmpty(majors)}">Chua co nganh dao tao nao.</div>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="catalog-side">
+                <section class="form-card" id="departmentFormCard">
+                    <div class="section-heading">
+                        <h3>Thong tin khoa</h3>
+                        <p>Them moi hoac cap nhat khoa.</p>
+                    </div>
+                    <form th:action="@{${departmentFormAction}}" th:object="${departmentForm}" method="post">
+                        <div class="form-group">
+                            <label for="departmentCode">Ma khoa</label>
+                            <input id="departmentCode" th:field="*{code}" type="text" placeholder="VD: CNTT">
+                            <div class="field-error" th:errors="*{code}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="departmentName">Ten khoa</label>
+                            <input id="departmentName" th:field="*{name}" type="text" placeholder="VD: Khoa Cong nghe thong tin">
+                            <div class="field-error" th:errors="*{name}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="departmentDescription">Mo ta</label>
+                            <textarea id="departmentDescription" th:field="*{description}" rows="4"></textarea>
+                        </div>
+                        <label class="switch-row">
+                            <input th:field="*{active}" type="checkbox">
+                            <span>Khoa dang hoat dong</span>
+                        </label>
+                        <div class="form-actions">
+                            <a class="secondary-button" th:href="@{/admin/catalog/departments}">Lam moi</a>
+                            <button class="primary-button" type="submit">Luu khoa</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="form-card">
+                    <div class="section-heading">
+                        <h3>Thong tin nganh</h3>
+                        <p>Nganh luon phai thuoc mot khoa.</p>
+                    </div>
+                    <form th:action="@{${majorFormAction}}" th:object="${majorForm}" method="post">
+                        <div class="form-group">
+                            <label for="majorDepartmentId">Khoa chu quan</label>
+                            <select id="majorDepartmentId" th:field="*{departmentId}">
+                                <option value="">-- Chon khoa --</option>
+                                <option th:each="department : ${departmentOptions}"
+                                        th:value="${department.id}"
+                                        th:text="${department.name}">Khoa</option>
+                            </select>
+                            <div class="field-error" th:errors="*{departmentId}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="majorCode">Ma nganh</label>
+                            <input id="majorCode" th:field="*{code}" type="text" placeholder="VD: 7480103">
+                            <div class="field-error" th:errors="*{code}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="majorName">Ten nganh</label>
+                            <input id="majorName" th:field="*{name}" type="text" placeholder="VD: Ky thuat phan mem">
+                            <div class="field-error" th:errors="*{name}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="majorDescription">Mo ta</label>
+                            <textarea id="majorDescription" th:field="*{description}" rows="4"></textarea>
+                        </div>
+                        <label class="switch-row">
+                            <input th:field="*{active}" type="checkbox">
+                            <span>Nganh dang tuyen sinh</span>
+                        </label>
+                        <div class="form-actions">
+                            <a class="secondary-button" th:href="@{/admin/catalog/departments}">Lam moi</a>
+                            <button class="primary-button" type="submit">Luu nganh</button>
+                        </div>
+                    </form>
+                </section>
+            </aside>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.querySelectorAll('.department-detail-row').forEach(row => row.hidden = true);
+
+    document.querySelectorAll('.detail-toggle, .department-row').forEach(element => {
+        element.addEventListener('click', event => {
+            if (!element.classList.contains('detail-toggle') && event.target.closest('a, button, form')) {
+                return;
+            }
+            const id = element.dataset.detail;
+            const detail = document.getElementById(id);
+            if (detail) {
+                detail.hidden = !detail.hidden;
+            }
+        });
+    });
+
+    const departmentSearch = document.getElementById('departmentSearch');
+    const departmentRows = document.querySelectorAll('#departmentTable tbody .department-row');
+
+    if (departmentSearch) {
+        departmentSearch.addEventListener('input', function () {
+            const keyword = this.value.toLowerCase().trim();
+            departmentRows.forEach(row => {
+                const match = row.innerText.toLowerCase().includes(keyword);
+                row.style.display = match ? '' : 'none';
+                const detail = document.getElementById(row.dataset.detail);
+                if (detail && !match) {
+                    detail.style.display = 'none';
+                } else if (detail) {
+                    detail.style.display = '';
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>
