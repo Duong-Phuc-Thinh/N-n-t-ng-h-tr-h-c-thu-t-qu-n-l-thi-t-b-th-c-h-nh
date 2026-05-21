@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lich su dat lich co van - EduLab Nexus</title>
-    <link rel="stylesheet" th:href="@{/css/student.css(v=4)}">
+    <link rel="stylesheet" th:href="@{/css/student.css(v=10)}">
 </head>
 <body>
 <div class="student-shell">
@@ -40,6 +40,7 @@
                             <th>Chu de</th>
                             <th>Ngay gio</th>
                             <th>Trang thai</th>
+                            <th>Nhu cau thiet bi</th>
                             <th>Thiet bi lien ket</th>
                             <th>Thao tac</th>
                         </tr>
@@ -62,6 +63,14 @@
                                       th:text="${booking.status}">PENDING</span>
                             </td>
                             <td>
+                                <div th:if="${booking.hasEquipmentRequest}">
+                                    <strong th:text="${booking.requestedEquipmentName}">Thiet bi</strong>
+                                    <small th:text="'SL: ' + ${booking.requestedEquipmentQuantity}">SL: 1</small>
+                                    <small th:if="${booking.requestedEquipmentNote}" th:text="${booking.requestedEquipmentNote}">Ghi chu</small>
+                                </div>
+                                <span class="muted-text" th:unless="${booking.hasEquipmentRequest}">Khong yeu cau</span>
+                            </td>
+                            <td>
                                 <div class="linked-equipment-list" th:if="${not #lists.isEmpty(booking.borrowedEquipments)}">
                                     <span class="linked-equipment-pill" th:each="eq : ${booking.borrowedEquipments}">
                                         <strong th:text="${eq.equipmentName}">Thiet bi</strong>
@@ -78,11 +87,15 @@
                                     <input type="text" name="reason" placeholder="Ly do huy">
                                     <button class="danger-button" type="submit">Huy lich</button>
                                 </form>
-                                <span class="muted-text" th:unless="${booking.cancellable}">Khong the huy</span>
+                                <span class="muted-text" th:unless="${booking.cancellable}">
+                                    Khong the huy
+                                    <small th:if="${booking.status.name() == 'PENDING' || booking.status.name() == 'APPROVED'}"
+                                           th:text="'Han huy: truoc ' + ${#temporals.format(booking.cancellationDeadline, 'dd/MM/yyyy HH:mm')}">Han huy</small>
+                                </span>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(bookings)}">
-                            <td colspan="8" class="empty-cell">Ban chua co lich co van nao.</td>
+                            <td colspan="9" class="empty-cell">Ban chua co lich co van nao.</td>
                         </tr>
                         </tbody>
                     </table>

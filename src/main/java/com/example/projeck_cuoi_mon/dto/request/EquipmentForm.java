@@ -13,27 +13,27 @@ import lombok.Setter;
 @Setter
 public class EquipmentForm {
 
-    @NotNull(message = "Lab room type is required")
+    @NotNull(message = "Danh mục phòng lab không được để trống")
     private Long labRoomTypeId;
 
-    @NotBlank(message = "Name is required")
-    @Size(max = 150, message = "Name must be at most 150 characters")
+    @NotBlank(message = "Tên thiết bị không được để trống")
+    @Size(max = 150, message = "Tên thiết bị không được vượt quá 150 ký tự")
     private String name;
 
     private String description;
 
-    @NotNull(message = "Total quantity is required")
-    @Min(value = 0, message = "Total quantity must be greater than or equal to 0")
+    @NotNull(message = "Tổng số lượng không được để trống")
+    @Min(value = 0, message = "Tổng số lượng phải lớn hơn hoặc bằng 0")
     private Integer totalQuantity;
 
-    @NotNull(message = "Available quantity is required")
-    @Min(value = 0, message = "Available quantity must be greater than or equal to 0")
+    @NotNull(message = "Số lượng khả dụng không được để trống")
+    @Min(value = 0, message = "Số lượng khả dụng phải lớn hơn hoặc bằng 0")
     private Integer availableQuantity;
 
-    @NotNull(message = "Status is required")
+    @NotNull(message = "Trạng thái không được để trống")
     private EquipmentStatus status = EquipmentStatus.AVAILABLE;
 
-    @AssertTrue(message = "Available quantity must not be greater than total quantity")
+    @AssertTrue(message = "Số lượng khả dụng không được lớn hơn tổng số lượng")
     public boolean isQuantityValid() {
         if (totalQuantity == null || availableQuantity == null) {
             return true;

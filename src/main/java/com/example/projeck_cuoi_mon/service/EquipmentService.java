@@ -39,7 +39,7 @@ public class EquipmentService {
     @Transactional(readOnly = true)
     public Equipment findById(Long id) {
         return equipmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Equipment not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy thiết bị"));
     }
 
     @Transactional(readOnly = true)
@@ -60,7 +60,7 @@ public class EquipmentService {
         validateQuantity(form);
 
         LabRoomType labRoomType = labRoomTypeRepository.findById(form.getLabRoomTypeId())
-                .orElseThrow(() -> new IllegalArgumentException("Lab room type not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy danh mục phòng lab"));
 
         Equipment equipment = Equipment.builder()
                 .labRoomType(labRoomType)
@@ -81,7 +81,7 @@ public class EquipmentService {
         validateQuantity(form);
 
         LabRoomType labRoomType = labRoomTypeRepository.findById(form.getLabRoomTypeId())
-                .orElseThrow(() -> new IllegalArgumentException("Lab room type not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy danh mục phòng lab"));
 
         Equipment equipment = findById(id);
         equipment.setLabRoomType(labRoomType);
@@ -117,14 +117,14 @@ public class EquipmentService {
         if (form.getAvailableQuantity() != null
                 && form.getTotalQuantity() != null
                 && form.getAvailableQuantity() > form.getTotalQuantity()) {
-            throw new IllegalArgumentException("Available quantity must not be greater than total quantity");
+            throw new IllegalArgumentException("Số lượng khả dụng không được lớn hơn tổng số lượng");
         }
     }
 
     private LabRoomType findDefaultLabRoomType() {
         return labRoomTypeRepository.findAll().stream()
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Please seed lab_room_types before creating equipment"));
+                .orElseThrow(() -> new IllegalArgumentException("Vui lòng khởi tạo danh mục phòng lab trước khi tạo thiết bị"));
     }
 
     private String generateEquipmentCode() {

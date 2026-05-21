@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class IssueBorrowingForm {
 
-    @NotNull(message = "Borrowing record is required")
+    @NotNull(message = "Mã bản ghi mượn thiết bị không được để trống")
     private Long borrowingRecordId;
 }

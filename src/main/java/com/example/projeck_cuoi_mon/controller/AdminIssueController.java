@@ -38,14 +38,14 @@ public class AdminIssueController {
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Borrowing record is required");
+            redirectAttributes.addFlashAttribute("error", "Yêu cầu mã bản ghi mượn thiết bị");
             return "redirect:/admin/issues";
         }
 
         try {
             SessionUser admin = (SessionUser) session.getAttribute(SessionConstants.LOGIN_USER);
             equipmentIssueService.confirmIssue(issueBorrowingForm.getBorrowingRecordId(), admin.getId());
-            redirectAttributes.addFlashAttribute("success", "Equipment issued successfully");
+            redirectAttributes.addFlashAttribute("success", "Cấp phát thiết bị thành công");
         } catch (IllegalArgumentException ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
         }

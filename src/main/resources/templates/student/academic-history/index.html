@@ -91,7 +91,7 @@
 
             <section class="content-card history-section">
                 <div class="section-heading">
-                    <h2>Bang tu van va danh gia</h2>
+                    <h2>Bang diem va danh gia</h2>
                     <p>Du lieu chi tiet tu bang mentoring_sessions va academic_evaluations.</p>
                 </div>
 
@@ -126,6 +126,46 @@
                         </tr>
                         <tr th:if="${#lists.isEmpty(history.mentoringHistories)}">
                             <td colspan="7" class="empty-cell">Chua co lich su tu van.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="content-card history-section">
+                <div class="section-heading">
+                    <h2>Thiet bi da muon</h2>
+                    <p>Danh sach thiet bi gan voi tai khoan sinh vien hien tai tu cac phieu muon.</p>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Ma phieu</th>
+                            <th>Ngay muon</th>
+                            <th>Han tra</th>
+                            <th>Thiet bi</th>
+                            <th>Ma thiet bi</th>
+                            <th>So luong</th>
+                            <th>Trang thai</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${history.borrowingHistories}">
+                            <td th:text="${item.borrowingRecordId}">1</td>
+                            <td th:text="${#temporals.format(item.borrowDate, 'dd/MM/yyyy')}">20/05/2026</td>
+                            <td th:text="${#temporals.format(item.expectedReturnDate, 'dd/MM/yyyy')}">03/06/2026</td>
+                            <td th:text="${item.equipmentName}">Laptop</td>
+                            <td th:text="${item.equipmentCode}">EQ-001</td>
+                            <td th:text="${item.quantity}">1</td>
+                            <td>
+                                <span th:class="'badge status-' + ${#strings.toLowerCase(item.borrowingStatus.name())}"
+                                      th:text="${item.borrowingStatus}">ISSUED</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(history.borrowingHistories)}">
+                            <td colspan="7" class="empty-cell">Ban chua co thiet bi muon nao.</td>
                         </tr>
                         </tbody>
                     </table>

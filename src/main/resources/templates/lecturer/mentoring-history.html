@@ -48,6 +48,7 @@
                         <th>Noi dung</th>
                         <th>Dia diem</th>
                         <th>Trang thai</th>
+                        <th>Nhu cau thiet bi</th>
                         <th>Thiet bi chi dinh</th>
                         <th class="action-cell">Thao tac</th>
                     </tr>
@@ -81,6 +82,16 @@
                                   th:text="${booking.status}">PENDING</span>
                         </td>
                         <td>
+                            <div th:if="${booking.hasEquipmentRequest}" class="linked-equipment-list">
+                                <span class="linked-equipment-pill">
+                                    <strong th:text="${booking.requestedEquipmentName}">Thiet bi</strong>
+                                    <small th:text="'SL: ' + ${booking.requestedEquipmentQuantity}">SL: 1</small>
+                                </span>
+                                <small th:if="${booking.requestedEquipmentNote}" th:text="${booking.requestedEquipmentNote}">Ghi chu</small>
+                            </div>
+                            <span class="muted-text" th:unless="${booking.hasEquipmentRequest}">Khong yeu cau</span>
+                        </td>
+                        <td>
                             <div class="linked-equipment-list" th:if="${not #lists.isEmpty(booking.borrowedEquipments)}">
                                 <span class="linked-equipment-pill" th:each="eq : ${booking.borrowedEquipments}">
                                     <strong th:text="${eq.equipmentName}">Thiet bi</strong>
@@ -109,7 +120,7 @@
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(sessions)}">
-                        <td colspan="8" class="empty-cell">Chua co lich tu van nao.</td>
+                        <td colspan="9" class="empty-cell">Chua co lich tu van nao.</td>
                     </tr>
                     </tbody>
                 </table>

@@ -144,6 +144,16 @@
                 </section>
 
                 <section class="permission-card">
+                    <h3>Nhu cau thiet bi sinh vien da khai</h3>
+                    <div th:if="${sessionView.hasEquipmentRequest}">
+                        <p><strong th:text="${sessionView.requestedEquipmentName}">Thiet bi</strong></p>
+                        <p th:text="'So luong: ' + ${sessionView.requestedEquipmentQuantity}">So luong: 1</p>
+                        <p th:if="${sessionView.requestedEquipmentNote}" th:text="${sessionView.requestedEquipmentNote}">Ghi chu</p>
+                    </div>
+                    <p th:unless="${sessionView.hasEquipmentRequest}">Sinh vien khong khai nhu cau muon thiet bi.</p>
+                </section>
+
+                <section class="permission-card">
                     <h3>Luu y transaction</h3>
                     <p>Neu danh gia hoac thiet bi khong hop le, toan bo giao dich se bi huy va khong tao du lieu le.</p>
                 </section>

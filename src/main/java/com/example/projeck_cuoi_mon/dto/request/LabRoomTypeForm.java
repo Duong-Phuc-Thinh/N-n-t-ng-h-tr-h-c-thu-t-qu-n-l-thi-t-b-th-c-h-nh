@@ -9,12 +9,12 @@ import lombok.Setter;
 @Setter
 public class LabRoomTypeForm {
 
-    @NotBlank
-    @Size(max = 30)
+    @NotBlank(message = "Mã danh mục phòng lab không được để trống")
+    @Size(max = 30, message = "Mã danh mục phòng lab không được vượt quá 30 ký tự")
     private String code;
 
-    @NotBlank
-    @Size(max = 150)
+    @NotBlank(message = "Tên danh mục phòng lab không được để trống")
+    @Size(max = 150, message = "Tên danh mục phòng lab không được vượt quá 150 ký tự")
     private String name;
 
     private String description;

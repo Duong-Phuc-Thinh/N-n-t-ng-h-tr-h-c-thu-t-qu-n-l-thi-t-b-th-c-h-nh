@@ -56,7 +56,7 @@ public class AdminEquipmentController {
 
         try {
             equipmentService.create(equipmentForm);
-            redirectAttributes.addFlashAttribute("success", "Equipment created successfully");
+            redirectAttributes.addFlashAttribute("success", "Thêm thiết bị thành công");
             return "redirect:/admin/equipments";
         } catch (IllegalArgumentException ex) {
             model.addAttribute("error", ex.getMessage());
@@ -93,7 +93,7 @@ public class AdminEquipmentController {
 
         try {
             equipmentService.update(id, equipmentForm);
-            redirectAttributes.addFlashAttribute("success", "Equipment updated successfully");
+            redirectAttributes.addFlashAttribute("success", "Cập nhật thiết bị thành công");
             return "redirect:/admin/equipments";
         } catch (IllegalArgumentException ex) {
             model.addAttribute("error", ex.getMessage());
@@ -107,7 +107,7 @@ public class AdminEquipmentController {
     @PostMapping("/{id}/disable")
     public String disable(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         equipmentService.disable(id);
-        redirectAttributes.addFlashAttribute("success", "Equipment disabled successfully");
+        redirectAttributes.addFlashAttribute("success", "Đã ngừng hoạt động thiết bị thành công");
         return "redirect:/admin/equipments";
     }
 }

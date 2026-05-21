@@ -16,30 +16,30 @@ import java.time.LocalDate;
 @Setter
 public class LecturerEquipmentRequestForm {
 
-    @NotBlank(message = "Purpose is required")
-    @Size(max = 200, message = "Purpose must be at most 200 characters")
+    @NotBlank(message = "Mục đích mượn không được để trống")
+    @Size(max = 200, message = "Mục đích mượn không được vượt quá 200 ký tự")
     private String purpose;
 
-    @NotNull(message = "Equipment is required")
+    @NotNull(message = "Vui lòng chọn thiết bị")
     private Long equipmentId;
 
-    @NotNull(message = "Quantity is required")
-    @Min(value = 1, message = "Quantity must be at least 1")
+    @NotNull(message = "Vui lòng nhập số lượng")
+    @Min(value = 1, message = "Số lượng mượn phải ít nhất là 1")
     private Integer quantity;
 
-    @NotNull(message = "Borrow date is required")
-    @FutureOrPresent(message = "Borrow date must not be in the past")
+    @NotNull(message = "Vui lòng chọn ngày mượn")
+    @FutureOrPresent(message = "Ngày mượn không được ở trong quá khứ")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate borrowDate;
 
-    @NotNull(message = "Expected return date is required")
+    @NotNull(message = "Vui lòng chọn ngày trả dự kiến")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate expectedReturnDate;
 
-    @Size(max = 500, message = "Note must be at most 500 characters")
+    @Size(max = 500, message = "Ghi chú không được vượt quá 500 ký tự")
     private String note;
 
-    @AssertTrue(message = "Expected return date must be after or equal to borrow date")
+    @AssertTrue(message = "Ngày trả dự kiến phải lớn hơn hoặc bằng ngày mượn")
     public boolean isReturnDateValid() {
         if (borrowDate == null || expectedReturnDate == null) {
             return true;

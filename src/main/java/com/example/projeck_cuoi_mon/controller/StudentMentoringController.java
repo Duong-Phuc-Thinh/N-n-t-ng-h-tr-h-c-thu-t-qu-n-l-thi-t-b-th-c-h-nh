@@ -64,7 +64,7 @@ public class StudentMentoringController {
         try {
             SessionUser loginUser = getLoginUser(session);
             mentoringService.book(loginUser.getId(), mentoringBookingForm);
-            redirectAttributes.addFlashAttribute("success", "Mentoring session booked successfully");
+            redirectAttributes.addFlashAttribute("success", "Đặt lịch tư vấn học thuật thành công");
             return "redirect:/student/mentoring/history";
         } catch (IllegalArgumentException ex) {
             model.addAttribute("error", ex.getMessage());
@@ -82,14 +82,14 @@ public class StudentMentoringController {
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Cancel reason must be at most 500 characters");
+            redirectAttributes.addFlashAttribute("error", "Lý do hủy chỉ được tối đa 500 ký tự");
             return "redirect:/student/mentoring/history";
         }
 
         try {
             SessionUser loginUser = getLoginUser(session);
             mentoringService.cancel(loginUser.getId(), id, cancelForm.getReason());
-            redirectAttributes.addFlashAttribute("success", "Booking cancelled successfully");
+            redirectAttributes.addFlashAttribute("success", "Hủy lịch tư vấn thành công");
         } catch (IllegalArgumentException ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
         }

@@ -93,7 +93,7 @@ public class LecturerMentoringController {
 
         try {
             mentoringService.updateSchedule(loginUser.getId(), id, editMentoringScheduleForm);
-            redirectAttributes.addFlashAttribute("success", "Mentoring schedule updated successfully");
+            redirectAttributes.addFlashAttribute("success", "Cập nhật lịch tư vấn học thuật thành công");
             return "redirect:/lecturer/mentoring-history";
         } catch (IllegalArgumentException ex) {
             model.addAttribute("loginUser", loginUser);
@@ -123,7 +123,7 @@ public class LecturerMentoringController {
 
         try {
             mentoringService.complete(loginUser.getId(), id, completeMentoringForm);
-            redirectAttributes.addFlashAttribute("success", "Mentoring session completed successfully");
+            redirectAttributes.addFlashAttribute("success", "Hoàn thành ca tư vấn học thuật thành công");
             return "redirect:/lecturer/mentoring-history";
         } catch (IllegalArgumentException ex) {
             model.addAttribute("loginUser", loginUser);
@@ -143,7 +143,7 @@ public class LecturerMentoringController {
         try {
             SessionUser loginUser = (SessionUser) session.getAttribute(SessionConstants.LOGIN_USER);
             mentoringService.accept(loginUser.getId(), id);
-            redirectAttributes.addFlashAttribute("success", "Mentoring session accepted successfully");
+            redirectAttributes.addFlashAttribute("success", "Chấp nhận ca tư vấn học thuật thành công");
         } catch (IllegalArgumentException ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
         }

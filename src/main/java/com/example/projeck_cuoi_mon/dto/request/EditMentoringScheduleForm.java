@@ -14,15 +14,15 @@ import java.time.LocalTime;
 @Setter
 public class EditMentoringScheduleForm {
 
-    @NotNull(message = "Date is required")
-    @FutureOrPresent(message = "Date must not be in the past")
+    @NotNull(message = "Ngày tư vấn không được để trống")
+    @FutureOrPresent(message = "Ngày tư vấn không được ở trong quá khứ")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate bookingDate;
 
-    @NotNull(message = "Time slot is required")
+    @NotNull(message = "Khung giờ không được để trống")
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeSlot;
 
-    @Size(max = 120, message = "Location must be at most 120 characters")
+    @Size(max = 120, message = "Địa điểm không được vượt quá 120 ký tự")
     private String location;
 }

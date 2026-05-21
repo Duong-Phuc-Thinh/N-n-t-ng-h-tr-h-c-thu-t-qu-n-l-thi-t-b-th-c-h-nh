@@ -6,37 +6,37 @@
         <span class="student-brand-mark">EL</span>
         <div>
             <strong>EduLab Nexus</strong>
-            <small>Cong sinh vien</small>
+            <small>Cổng sinh viên</small>
         </div>
     </div>
 
     <nav class="student-nav">
         <a th:href="@{/student/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active'">
             <span>DB</span>
-            <strong>Tong quan</strong>
+            <strong>Tổng quan</strong>
         </a>
         <a th:href="@{/student/mentoring/book}" th:classappend="${activeMenu == 'book'} ? 'active'">
             <span>BK</span>
-            <strong>Dat lich co van</strong>
+            <strong>Đặt lịch tư vấn</strong>
         </a>
         <a th:href="@{/student/mentoring/history}" th:classappend="${activeMenu == 'mentoring'} ? 'active'">
             <span>HS</span>
-            <strong>Lich su dat lich</strong>
+            <strong>Lịch sử đặt lịch</strong>
         </a>
         <a th:href="@{/student/academic-history}" th:classappend="${activeMenu == 'academic'} ? 'active'">
             <span>AC</span>
-            <strong>Lich su hoc thuat</strong>
+            <strong>Lịch sử học thuật</strong>
         </a>
         <a th:href="@{/profile}">
             <span>PF</span>
-            <strong>Ho so ca nhan</strong>
+            <strong>Hồ sơ cá nhân</strong>
         </a>
     </nav>
 
     <form class="student-logout" th:action="@{/logout}" method="post">
         <button type="submit">
             <span>LO</span>
-            <strong>Dang xuat</strong>
+            <strong>Đăng xuất</strong>
         </button>
     </form>
 </aside>
@@ -44,7 +44,7 @@
 <header th:fragment="topbar(title)" class="student-topbar">
     <div>
         <strong th:text="${title}">Student</strong>
-        <small>Smart Academic & Lab Support Platform</small>
+        <small>Nền tảng Hỗ trợ Học thuật & Lab Thông minh</small>
     </div>
     <a class="student-avatar" th:href="@{/profile}">SV</a>
 </header>

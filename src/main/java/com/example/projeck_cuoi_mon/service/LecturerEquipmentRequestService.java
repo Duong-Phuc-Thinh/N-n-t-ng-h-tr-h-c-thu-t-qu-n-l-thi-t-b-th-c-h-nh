@@ -42,12 +42,12 @@ public class LecturerEquipmentRequestService {
     @Transactional
     public void createRequest(Long lecturerUserId, LecturerEquipmentRequestForm form) {
         User lecturerUser = userRepository.findById(lecturerUserId)
-                .orElseThrow(() -> new IllegalArgumentException("Lecturer user not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng giảng viên"));
         Equipment equipment = equipmentRepository.findById(form.getEquipmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Equipment not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy thiết bị"));
 
         if (!Boolean.TRUE.equals(equipment.getActive())) {
-            throw new IllegalArgumentException("Selected equipment is inactive");
+            throw new IllegalArgumentException("Thiết bị được chọn đã ngừng hoạt động");
         }
 
         BorrowingRecord record = BorrowingRecord.builder()

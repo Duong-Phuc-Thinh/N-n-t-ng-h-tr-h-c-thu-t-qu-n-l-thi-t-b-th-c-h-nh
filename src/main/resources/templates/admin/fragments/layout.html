@@ -6,50 +6,50 @@
         <span class="brand-mark">EL</span>
         <div>
             <strong>EduLab Nexus</strong>
-            <small>He quan tri dai hoc</small>
+            <small>Hệ quản trị đại học</small>
         </div>
     </div>
 
     <nav class="side-nav">
         <a th:href="@{/admin/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active'">
             <span class="nav-icon">DB</span>
-            <span>Tong quan</span>
+            <span>Tổng quan</span>
         </a>
         <a th:href="@{/admin/equipments}" th:classappend="${activeMenu == 'equipments'} ? 'active'">
             <span class="nav-icon">EQ</span>
-            <span>Quan ly thiet bi</span>
+            <span>Quản lý thiết bị</span>
         </a>
         <a th:href="@{/admin/catalog/departments}" th:classappend="${activeMenu == 'departments'} ? 'active'">
             <span class="nav-icon">DP</span>
-            <span>Khoa &amp; Nganh</span>
+            <span>Khoa &amp; Ngành</span>
         </a>
         <a th:href="@{/admin/catalog/lab-room-types}" th:classappend="${activeMenu == 'lab-room-types'} ? 'active'">
             <span class="nav-icon">LB</span>
-            <span>Danh muc phong lab</span>
+            <span>Danh mục phòng lab</span>
         </a>
         <a th:href="@{/admin/issues}" th:classappend="${activeMenu == 'issues'} ? 'active'">
             <span class="nav-icon">IS</span>
-            <span>Cap phat thiet bi</span>
+            <span>Cấp phát thiết bị</span>
         </a>
     </nav>
 
     <form class="logout-form" th:action="@{/logout}" method="post">
         <button type="submit">
             <span class="nav-icon">LO</span>
-            <span>Dang xuat</span>
+            <span>Đăng xuất</span>
         </button>
     </form>
 </aside>
 
 <header th:fragment="topbar(title)" class="admin-topbar">
     <div class="topbar-search">
-        <span>Tim kiem</span>
-        <input type="text" placeholder="Tim kiem nhanh...">
+        <span>Tìm kiếm</span>
+        <input type="text" placeholder="Tìm kiếm nhanh...">
     </div>
     <div class="topbar-user">
         <div>
             <strong>Admin EduLab</strong>
-            <small>Quan tri vien</small>
+            <small>Quản trị viên</small>
         </div>
         <a class="topbar-avatar" th:href="@{/profile}">A</a>
     </div>

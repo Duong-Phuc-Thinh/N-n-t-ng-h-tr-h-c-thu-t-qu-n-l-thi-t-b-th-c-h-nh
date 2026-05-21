@@ -11,11 +11,11 @@ import lombok.Setter;
 @Setter
 public class CompleteMentoringForm {
 
-    @NotNull(message = "Evaluation grade is required")
+    @NotNull(message = "Vui lòng chọn xếp loại đánh giá")
     private EvaluationGrade grade = EvaluationGrade.GOOD;
 
-    @NotBlank(message = "Consultation content is required")
-    @Size(min = 10, max = 2000, message = "Consultation content must be from 10 to 2000 characters")
+    @NotBlank(message = "Nội dung tư vấn không được để trống")
+    @Size(min = 10, max = 2000, message = "Nội dung tư vấn phải từ 10 đến 2000 ký tự")
     private String comment;
 
     private java.util.List<EquipmentLendItem> items = new java.util.ArrayList<>();

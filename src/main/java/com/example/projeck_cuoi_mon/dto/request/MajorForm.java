@@ -10,15 +10,15 @@ import lombok.Setter;
 @Setter
 public class MajorForm {
 
-    @NotNull
+    @NotNull(message = "Khoa quản lý không được để trống")
     private Long departmentId;
 
-    @NotBlank
-    @Size(max = 30)
+    @NotBlank(message = "Mã ngành không được để trống")
+    @Size(max = 30, message = "Mã ngành không được vượt quá 30 ký tự")
     private String code;
 
-    @NotBlank
-    @Size(max = 150)
+    @NotBlank(message = "Tên ngành không được để trống")
+    @Size(max = 150, message = "Tên ngành không được vượt quá 150 ký tự")
     private String name;
 
     private String description;

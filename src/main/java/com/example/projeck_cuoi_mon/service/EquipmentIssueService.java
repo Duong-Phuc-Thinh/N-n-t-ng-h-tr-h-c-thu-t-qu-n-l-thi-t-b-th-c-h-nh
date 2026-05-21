@@ -33,21 +33,21 @@ public class EquipmentIssueService {
     @Transactional
     public void confirmIssue(Long borrowingRecordId, Long adminUserId) {
         BorrowingRecord record = borrowingRecordRepository.findByIdForIssue(borrowingRecordId)
-                .orElseThrow(() -> new IllegalArgumentException("Borrowing record not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy bản ghi mượn thiết bị"));
 
         if (record.getStatus() != BorrowingStatus.WAITING_ALLOCATION) {
-            throw new IllegalArgumentException("Only WAITING_ALLOCATION records can be issued");
+            throw new IllegalArgumentException("Chỉ những bản ghi đang chờ cấp phát mới có thể được duyệt cấp phát");
         }
 
         if (record.getDetails().isEmpty()) {
-            throw new IllegalArgumentException("Borrowing record has no equipment details");
+            throw new IllegalArgumentException("Bản ghi mượn thiết bị không có thông tin chi tiết thiết bị");
         }
 
         validateAllStockAvailable(record);
         subtractStock(record);
 
         User admin = userRepository.findById(adminUserId)
-                .orElseThrow(() -> new IllegalArgumentException("Admin user not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản quản trị viên"));
         record.setExportedByAdmin(admin);
         record.setStatus(BorrowingStatus.ISSUED);
     }
@@ -56,12 +56,12 @@ public class EquipmentIssueService {
         for (BorrowingDetail detail : record.getDetails()) {
             Equipment equipment = detail.getEquipment();
             if (!Boolean.TRUE.equals(equipment.getActive())) {
-                throw new IllegalArgumentException(equipment.getName() + " is inactive");
+                throw new IllegalArgumentException(equipment.getName() + " đã ngừng hoạt động");
             }
             if (equipment.getQuantityAvailable() < detail.getQuantity()) {
                 throw new IllegalArgumentException(
-                        equipment.getName() + " is not enough. Requested "
-                                + detail.getQuantity() + ", available "
+                        equipment.getName() + " không đủ số lượng khả dụng. Yêu cầu "
+                                + detail.getQuantity() + ", hiện có "
                                 + equipment.getQuantityAvailable()
                 );
             }

@@ -55,7 +55,7 @@ public class LecturerEquipmentRequestController {
         try {
             SessionUser lecturer = (SessionUser) session.getAttribute(SessionConstants.LOGIN_USER);
             lecturerEquipmentRequestService.createRequest(lecturer.getId(), requestForm);
-            redirectAttributes.addFlashAttribute("success", "Equipment request sent to admin successfully");
+            redirectAttributes.addFlashAttribute("success", "Yêu cầu mượn thiết bị đã được gửi tới quản trị viên thành công");
             return "redirect:/lecturer/equipment-requests";
         } catch (IllegalArgumentException ex) {
             model.addAttribute("error", ex.getMessage());

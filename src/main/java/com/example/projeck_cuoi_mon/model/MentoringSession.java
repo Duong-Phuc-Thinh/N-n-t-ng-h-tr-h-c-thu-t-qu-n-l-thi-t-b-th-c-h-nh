@@ -70,4 +70,13 @@ public class MentoringSession extends BaseEntity {
 
     @Column(name = "lecturer_note", columnDefinition = "TEXT")
     private String lecturerNote;
+
+    @Column(name = "requested_equipment_name", length = 150)
+    private String requestedEquipmentName;
+
+    @Column(name = "requested_equipment_quantity")
+    private Integer requestedEquipmentQuantity;
+
+    @Column(name = "requested_equipment_note", columnDefinition = "TEXT")
+    private String requestedEquipmentNote;
 }

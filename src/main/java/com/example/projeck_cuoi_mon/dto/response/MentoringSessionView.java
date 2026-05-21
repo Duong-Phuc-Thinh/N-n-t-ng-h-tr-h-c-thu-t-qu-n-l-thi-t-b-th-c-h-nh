@@ -20,8 +20,13 @@ public class MentoringSessionView {
     private String description;
     private String location;
     private LocalDateTime scheduledAt;
+    private LocalDateTime cancellationDeadline;
     private Integer durationMinutes;
     private MentoringStatus status;
     private boolean cancellable;
     private List<BorrowedEquipmentDto> borrowedEquipments;
+    private String requestedEquipmentName;
+    private Integer requestedEquipmentQuantity;
+    private String requestedEquipmentNote;
+    private boolean hasEquipmentRequest;
 }

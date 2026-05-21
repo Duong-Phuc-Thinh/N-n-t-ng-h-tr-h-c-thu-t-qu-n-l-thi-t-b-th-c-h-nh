@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class CancelMentoringForm {
 
-    @Size(max = 500, message = "Reason must be at most 500 characters")
+    @Size(max = 500, message = "Lý do hủy không được vượt quá 500 ký tự")
     private String reason;
 }

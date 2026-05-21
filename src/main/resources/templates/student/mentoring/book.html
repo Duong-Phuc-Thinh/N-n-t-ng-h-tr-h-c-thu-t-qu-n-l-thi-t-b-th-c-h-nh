@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dat lich co van - EduLab Nexus</title>
-    <link rel="stylesheet" th:href="@{/css/student.css(v=4)}">
+    <link rel="stylesheet" th:href="@{/css/student.css(v=10)}">
 </head>
 <body>
 <div class="student-shell">
@@ -169,6 +169,40 @@
                             <div class="field-error" th:errors="*{description}"></div>
                         </div>
 
+                        <div class="booking-subsection">
+                            <h3>Nhu cau muon may / thiet bi</h3>
+                            <p>Thong tin nay giup giang vien nam nhu cau va lap yeu cau thiet bi cho admin neu phu hop.</p>
+                        </div>
+
+                        <label class="equipment-request-toggle">
+                            <input id="needsEquipment" type="checkbox" th:field="*{needsEquipment}">
+                            <span class="choice-icon">EQ</span>
+                            <span>
+                                <strong>Can muon thiet bi cho buoi tu van</strong>
+                                <small>Vi du: laptop, may tinh bang, bo kit lab</small>
+                            </span>
+                        </label>
+
+                        <div class="booking-time-grid equipment-request-fields" id="equipmentRequestFields">
+                            <div class="form-group">
+                                <label for="requestedEquipmentName">Ten thiet bi can muon</label>
+                                <input id="requestedEquipmentName" type="text" th:field="*{requestedEquipmentName}" placeholder="Vi du: Laptop cau hinh cao">
+                                <div class="field-error" th:errors="*{requestedEquipmentName}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="requestedEquipmentQuantity">So luong</label>
+                                <input id="requestedEquipmentQuantity" type="number" min="1" th:field="*{requestedEquipmentQuantity}" placeholder="1">
+                                <div class="field-error" th:errors="*{requestedEquipmentQuantity}"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group equipment-request-fields" id="equipmentRequestNoteWrap">
+                            <label for="requestedEquipmentNote">Ghi chu thiet bi</label>
+                            <textarea id="requestedEquipmentNote" rows="3" th:field="*{requestedEquipmentNote}" placeholder="Mo ta cau hinh, muc dich su dung hoac thoi gian can muon..."></textarea>
+                            <div class="field-error" th:errors="*{requestedEquipmentNote}"></div>
+                        </div>
+
                         <div class="booking-actions">
                             <button class="secondary-button" data-prev-step="2" type="button">Quay lai</button>
                             <button class="primary-button" data-next-step="4" type="button">Tiep tuc xac nhan</button>
@@ -213,6 +247,10 @@
                                 <small>Ghi chu</small>
                                 <p id="confirmDescription">Khong co ghi chu</p>
                             </div>
+                            <div class="confirm-wide">
+                                <small>Nhu cau thiet bi</small>
+                                <p id="confirmEquipment">Khong yeu cau thiet bi</p>
+                            </div>
                         </div>
 
                         <div class="booking-actions">
@@ -236,6 +274,8 @@
     const lecturerRadios = Array.from(document.querySelectorAll('input[name="lecturerId"]'));
     const emptyLecturerMessage = document.getElementById('emptyLecturerMessage');
     const emptyMajorMessage = document.getElementById('emptyMajorMessage');
+    const needsEquipment = document.getElementById('needsEquipment');
+    const equipmentRequestFields = Array.from(document.querySelectorAll('.equipment-request-fields'));
 
     function showStep(step) {
         panels.forEach(panel => panel.classList.toggle('active', panel.dataset.step === String(step)));
@@ -269,6 +309,17 @@
         document.getElementById('confirmTime').innerText = checkedTime ? checkedTime.value : 'Chua chon';
         document.getElementById('confirmTopic').innerText = document.getElementById('topic').value || 'Chua nhap';
         document.getElementById('confirmDescription').innerText = document.getElementById('description').value || 'Khong co ghi chu';
+        const equipmentName = document.getElementById('requestedEquipmentName').value.trim();
+        const equipmentQuantity = document.getElementById('requestedEquipmentQuantity').value;
+        const equipmentNote = document.getElementById('requestedEquipmentNote').value.trim();
+        document.getElementById('confirmEquipment').innerText = needsEquipment.checked
+            ? `${equipmentName || 'Chua nhap ten thiet bi'} - SL: ${equipmentQuantity || 'chua nhap'}${equipmentNote ? ' - ' + equipmentNote : ''}`
+            : 'Khong yeu cau thiet bi';
+    }
+
+    function syncEquipmentFields() {
+        equipmentRequestFields.forEach(element => element.hidden = !needsEquipment.checked);
+        syncConfirm();
     }
 
     function filterLecturers() {
@@ -353,6 +404,12 @@
                 showValidationMessage('Vui long chon ngay, khung gio va nhap chu de tu van.');
                 return false;
             }
+            if (needsEquipment.checked) {
+                if (!document.getElementById('requestedEquipmentName').value.trim() || !document.getElementById('requestedEquipmentQuantity').value) {
+                    showValidationMessage('Vui long nhap ten thiet bi va so luong can muon.');
+                    return false;
+                }
+            }
         }
         clearValidationMessage();
         return true;
@@ -384,6 +441,10 @@
     document.getElementById('bookingDate').addEventListener('change', syncConfirm);
     document.getElementById('topic').addEventListener('input', syncConfirm);
     document.getElementById('description').addEventListener('input', syncConfirm);
+    needsEquipment.addEventListener('change', syncEquipmentFields);
+    document.getElementById('requestedEquipmentName').addEventListener('input', syncConfirm);
+    document.getElementById('requestedEquipmentQuantity').addEventListener('input', syncConfirm);
+    document.getElementById('requestedEquipmentNote').addEventListener('input', syncConfirm);
     document.querySelectorAll('input[name="timeSlot"]').forEach(radio => radio.addEventListener('change', syncConfirm));
 
     document.getElementById('bookingForm').addEventListener('submit', event => {
@@ -401,6 +462,7 @@
 
     filterLecturers();
     filterMajors();
+    syncEquipmentFields();
 </script>
 </body>
 </html>

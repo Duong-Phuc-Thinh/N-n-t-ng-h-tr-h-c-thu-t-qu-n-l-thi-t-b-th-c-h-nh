@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Khoa va Nganh - EduLab Nexus</title>
+    <title>Khoa và Ngành - EduLab Nexus</title>
     <link rel="stylesheet" th:href="@{/css/admin.css(v=6)}">
 </head>
 <body>
@@ -11,37 +11,37 @@
     <div th:replace="~{admin/fragments/layout :: sidebar('departments')}"></div>
 
     <main class="admin-main">
-        <div th:replace="~{admin/fragments/layout :: topbar('Khoa va Nganh')}"></div>
+        <div th:replace="~{admin/fragments/layout :: topbar('Khoa và Ngành')}"></div>
 
         <section class="page-heading">
             <div>
-                <h2>Quan ly Khoa &amp; Nganh dao tao</h2>
-                <p>Quan ly cau truc hoc thuat, danh sach khoa va cac nganh truc thuoc tung khoa.</p>
+                <h2>Quản lý Khoa &amp; Ngành đào tạo</h2>
+                <p>Quản lý cấu trúc học thuật, danh sách khoa và các ngành trực thuộc từng khoa.</p>
             </div>
             <div class="heading-actions">
-                <a class="secondary-button" th:href="@{/admin/catalog/lab-room-types}">Danh muc phong lab</a>
+                <a class="secondary-button" th:href="@{/admin/catalog/lab-room-types}">Danh mục phòng lab</a>
                 <a class="primary-button" href="#departmentFormCard">
                     <span class="button-icon">+</span>
-                    Them khoa
+                    Thêm khoa
                 </a>
             </div>
         </section>
 
         <section class="stats-grid">
             <article class="stat-card">
-                <span>Tong so khoa</span>
+                <span>Tổng số khoa</span>
                 <strong th:text="${stats.departmentCount()}">0</strong>
             </article>
             <article class="stat-card">
-                <span>Khoa dang hoat dong</span>
+                <span>Khoa đang hoạt động</span>
                 <strong th:text="${stats.activeDepartmentCount()}">0</strong>
             </article>
             <article class="stat-card">
-                <span>Tong so nganh</span>
+                <span>Tổng số ngành</span>
                 <strong th:text="${stats.majorCount()}">0</strong>
             </article>
             <article class="stat-card">
-                <span>Giang vien</span>
+                <span>Giảng viên</span>
                 <strong th:text="${stats.lecturerCount()}">0</strong>
             </article>
         </section>
@@ -54,12 +54,12 @@
                 <section class="equipment-panel">
                     <div class="equipment-toolbar">
                         <div>
-                            <h3>Danh sach khoa</h3>
-                            <p th:text="'Hien co ' + ${#lists.size(departments)} + ' khoa trong he thong'">Danh sach khoa</p>
+                            <h3>Danh sách khoa</h3>
+                            <p th:text="'Hiện có ' + ${#lists.size(departments)} + ' khoa trong hệ thống'">Danh sách khoa</p>
                         </div>
                         <div class="toolbar-search">
-                            <span>Tim kiem</span>
-                            <input id="departmentSearch" type="text" placeholder="Ma khoa, ten khoa, truong khoa">
+                            <span>Tìm kiếm</span>
+                            <input id="departmentSearch" type="text" placeholder="Mã khoa, tên khoa, trưởng khoa">
                         </div>
                     </div>
 
@@ -67,13 +67,13 @@
                         <table class="edulab-table catalog-table" id="departmentTable">
                             <thead>
                             <tr>
-                                <th>Ma khoa</th>
-                                <th>Ten khoa</th>
-                                <th>Phu trach</th>
-                                <th class="number-cell">Nganh</th>
-                                <th class="number-cell">Giang vien</th>
-                                <th>Trang thai</th>
-                                <th class="action-cell">Thao tac</th>
+                                <th>Mã khoa</th>
+                                <th>Tên khoa</th>
+                                <th>Phụ trách</th>
+                                <th class="number-cell">Ngành</th>
+                                <th class="number-cell">Giảng viên</th>
+                                <th>Trạng thái</th>
+                                <th class="action-cell">Thao tác</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -84,27 +84,27 @@
                                         <div class="equipment-name-cell">
                                             <span class="equipment-avatar" th:text="${#strings.substring(department.name(),0,1)}">K</span>
                                             <div>
-                                                <strong th:text="${department.name()}">Khoa Cong nghe thong tin</strong>
-                                                <small th:text="${department.description()} ?: 'Chua co mo ta'">Mo ta</small>
+                                                <strong th:text="${department.name()}">Khoa Công nghệ thông tin</strong>
+                                                <small th:text="${department.description()} ?: 'Chưa có mô tả'">Mô tả</small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td th:text="${department.headLecturerName()}">Chua gan</td>
+                                    <td th:text="${department.headLecturerName()}">Chưa gán</td>
                                     <td class="number-cell" th:text="${department.majorCount()}">0</td>
                                     <td class="number-cell" th:text="${department.lecturerCount()}">0</td>
                                     <td>
                                         <span th:class="${department.active()} ? 'badge active-badge' : 'badge inactive-badge'"
-                                              th:text="${department.active()} ? 'ACTIVE' : 'INACTIVE'">ACTIVE</span>
+                                              th:text="${department.active()} ? 'HOẠT ĐỘNG' : 'TẠM NGƯNG'">HOẠT ĐỘNG</span>
                                     </td>
                                     <td class="action-cell">
                                         <div class="icon-actions">
-                                            <a class="icon-button" th:href="@{/admin/catalog/departments/{id}/edit(id=${department.id()})}">Sua</a>
+                                            <a class="icon-button" th:href="@{/admin/catalog/departments/{id}/edit(id=${department.id()})}">Sửa</a>
                                             <button class="icon-button detail-toggle" type="button"
-                                                    th:data-detail="'department-' + ${department.id()}">Nganh</button>
+                                                    th:data-detail="'department-' + ${department.id()}">Ngành</button>
                                             <form th:if="${department.active()}"
                                                   th:action="@{/admin/catalog/departments/{id}/disable(id=${department.id()})}"
                                                   method="post">
-                                                <button class="icon-button danger-icon" type="submit">Tat</button>
+                                                <button class="icon-button danger-icon" type="submit">Tắt</button>
                                             </form>
                                         </div>
                                     </td>
@@ -114,25 +114,25 @@
                                         <div class="major-grid">
                                             <article class="major-card" th:each="major : ${department.majors()}">
                                                 <div>
-                                                    <strong th:text="${major.name()}">Ky thuat phan mem</strong>
-                                                    <small th:text="'Ma nganh: ' + ${major.code()}">Ma nganh</small>
-                                                    <p th:text="${major.description()} ?: 'Chua co mo ta'">Mo ta</p>
+                                                    <strong th:text="${major.name()}">Kỹ thuật phần mềm</strong>
+                                                    <small th:text="'Mã ngành: ' + ${major.code()}">Mã ngành</small>
+                                                    <p th:text="${major.description()} ?: 'Chưa có mô tả'">Mô tả</p>
                                                 </div>
                                                 <div class="major-actions">
                                                     <span th:class="${major.active()} ? 'badge active-badge' : 'badge inactive-badge'"
-                                                          th:text="${major.active()} ? 'ACTIVE' : 'INACTIVE'">ACTIVE</span>
-                                                    <a class="icon-button" th:href="@{/admin/catalog/majors/{id}/edit(id=${major.id()})}">Sua</a>
+                                                          th:text="${major.active()} ? 'HOẠT ĐỘNG' : 'TẠM NGƯNG'">HOẠT ĐỘNG</span>
+                                                    <a class="icon-button" th:href="@{/admin/catalog/majors/{id}/edit(id=${major.id()})}">Sửa</a>
                                                 </div>
                                             </article>
                                             <div class="empty-panel" th:if="${#lists.isEmpty(department.majors())}">
-                                                Khoa nay chua co nganh dao tao.
+                                                Khoa này chưa có ngành đào tạo.
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
                             </th:block>
                             <tr th:if="${#lists.isEmpty(departments)}">
-                                <td colspan="7" class="empty-cell">Chua co khoa nao.</td>
+                                <td colspan="7" class="empty-cell">Chưa có khoa nào.</td>
                             </tr>
                             </tbody>
                         </table>
@@ -141,25 +141,25 @@
 
                 <section class="content-card major-list-panel">
                     <div class="section-heading">
-                        <h3>Tat ca nganh dao tao</h3>
-                        <p>Danh sach nganh duoc lien ket truc tiep voi khoa chu quan.</p>
+                        <h3>Tất cả ngành đào tạo</h3>
+                        <p>Danh sách ngành được liên kết trực tiếp với khoa chủ quản.</p>
                     </div>
                     <div class="major-list">
                         <article class="major-row" th:each="major : ${majors}">
                             <div>
-                                <strong th:text="${major.name()}">Ten nganh</strong>
-                                <small th:text="${major.departmentName()} + ' - ' + ${major.code()}">Khoa - Ma</small>
+                                <strong th:text="${major.name()}">Tên ngành</strong>
+                                <small th:text="${major.departmentName()} + ' - ' + ${major.code()}">Khoa - Mã</small>
                             </div>
                             <div class="row-actions">
                                 <span th:class="${major.active()} ? 'badge active-badge' : 'badge inactive-badge'"
-                                      th:text="${major.active()} ? 'ACTIVE' : 'INACTIVE'">ACTIVE</span>
-                                <a class="icon-button" th:href="@{/admin/catalog/majors/{id}/edit(id=${major.id()})}">Sua</a>
+                                      th:text="${major.active()} ? 'HOẠT ĐỘNG' : 'TẠM NGƯNG'">HOẠT ĐỘNG</span>
+                                <a class="icon-button" th:href="@{/admin/catalog/majors/{id}/edit(id=${major.id()})}">Sửa</a>
                                 <form th:if="${major.active()}" th:action="@{/admin/catalog/majors/{id}/disable(id=${major.id()})}" method="post">
-                                    <button class="icon-button danger-icon" type="submit">Tat</button>
+                                    <button class="icon-button danger-icon" type="submit">Tắt</button>
                                 </form>
                             </div>
                         </article>
-                        <div class="empty-panel" th:if="${#lists.isEmpty(majors)}">Chua co nganh dao tao nao.</div>
+                        <div class="empty-panel" th:if="${#lists.isEmpty(majors)}">Chưa có ngành đào tạo nào.</div>
                     </div>
                 </section>
             </div>
@@ -167,45 +167,45 @@
             <aside class="catalog-side">
                 <section class="form-card" id="departmentFormCard">
                     <div class="section-heading">
-                        <h3>Thong tin khoa</h3>
-                        <p>Them moi hoac cap nhat khoa.</p>
+                        <h3>Thông tin khoa</h3>
+                        <p>Thêm mới hoặc cập nhật khoa.</p>
                     </div>
                     <form th:action="@{${departmentFormAction}}" th:object="${departmentForm}" method="post">
                         <div class="form-group">
-                            <label for="departmentCode">Ma khoa</label>
+                            <label for="departmentCode">Mã khoa</label>
                             <input id="departmentCode" th:field="*{code}" type="text" placeholder="VD: CNTT">
                             <div class="field-error" th:errors="*{code}"></div>
                         </div>
                         <div class="form-group">
-                            <label for="departmentName">Ten khoa</label>
-                            <input id="departmentName" th:field="*{name}" type="text" placeholder="VD: Khoa Cong nghe thong tin">
+                            <label for="departmentName">Tên khoa</label>
+                            <input id="departmentName" th:field="*{name}" type="text" placeholder="VD: Khoa Công nghệ thông tin">
                             <div class="field-error" th:errors="*{name}"></div>
                         </div>
                         <div class="form-group">
-                            <label for="departmentDescription">Mo ta</label>
+                            <label for="departmentDescription">Mô tả</label>
                             <textarea id="departmentDescription" th:field="*{description}" rows="4"></textarea>
                         </div>
                         <label class="switch-row">
                             <input th:field="*{active}" type="checkbox">
-                            <span>Khoa dang hoat dong</span>
+                            <span>Khoa đang hoạt động</span>
                         </label>
                         <div class="form-actions">
-                            <a class="secondary-button" th:href="@{/admin/catalog/departments}">Lam moi</a>
-                            <button class="primary-button" type="submit">Luu khoa</button>
+                            <a class="secondary-button" th:href="@{/admin/catalog/departments}">Làm mới</a>
+                            <button class="primary-button" type="submit">Lưu khoa</button>
                         </div>
                     </form>
                 </section>
 
                 <section class="form-card">
                     <div class="section-heading">
-                        <h3>Thong tin nganh</h3>
-                        <p>Nganh luon phai thuoc mot khoa.</p>
+                        <h3>Thông tin ngành</h3>
+                        <p>Ngành luôn phải thuộc một khoa.</p>
                     </div>
                     <form th:action="@{${majorFormAction}}" th:object="${majorForm}" method="post">
                         <div class="form-group">
-                            <label for="majorDepartmentId">Khoa chu quan</label>
+                            <label for="majorDepartmentId">Khoa chủ quản</label>
                             <select id="majorDepartmentId" th:field="*{departmentId}">
-                                <option value="">-- Chon khoa --</option>
+                                <option value="">-- Chọn khoa --</option>
                                 <option th:each="department : ${departmentOptions}"
                                         th:value="${department.id}"
                                         th:text="${department.name}">Khoa</option>
@@ -213,26 +213,26 @@
                             <div class="field-error" th:errors="*{departmentId}"></div>
                         </div>
                         <div class="form-group">
-                            <label for="majorCode">Ma nganh</label>
+                            <label for="majorCode">Mã ngành</label>
                             <input id="majorCode" th:field="*{code}" type="text" placeholder="VD: 7480103">
                             <div class="field-error" th:errors="*{code}"></div>
                         </div>
                         <div class="form-group">
-                            <label for="majorName">Ten nganh</label>
-                            <input id="majorName" th:field="*{name}" type="text" placeholder="VD: Ky thuat phan mem">
+                            <label for="majorName">Tên ngành</label>
+                            <input id="majorName" th:field="*{name}" type="text" placeholder="VD: Kỹ thuật phần mềm">
                             <div class="field-error" th:errors="*{name}"></div>
                         </div>
                         <div class="form-group">
-                            <label for="majorDescription">Mo ta</label>
+                            <label for="majorDescription">Mô tả</label>
                             <textarea id="majorDescription" th:field="*{description}" rows="4"></textarea>
                         </div>
                         <label class="switch-row">
                             <input th:field="*{active}" type="checkbox">
-                            <span>Nganh dang tuyen sinh</span>
+                            <span>Ngành đang tuyển sinh</span>
                         </label>
                         <div class="form-actions">
-                            <a class="secondary-button" th:href="@{/admin/catalog/departments}">Lam moi</a>
-                            <button class="primary-button" type="submit">Luu nganh</button>
+                            <a class="secondary-button" th:href="@{/admin/catalog/departments}">Làm mới</a>
+                            <button class="primary-button" type="submit">Lưu ngành</button>
                         </div>
                     </form>
                 </section>

@@ -136,6 +136,9 @@ CREATE TABLE mentoring_sessions (
     status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     cancellation_reason TEXT,
     lecturer_note TEXT,
+    requested_equipment_name VARCHAR(150),
+    requested_equipment_quantity INT,
+    requested_equipment_note TEXT,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_mentoring_sessions_student

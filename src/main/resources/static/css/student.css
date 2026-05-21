@@ -22,6 +22,10 @@
     box-sizing: border-box;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 html {
     min-height: 100%;
 }
@@ -706,6 +710,52 @@ textarea {
 .choice-card small {
     display: block;
     color: var(--muted);
+}
+
+.equipment-request-toggle {
+    width: 100%;
+    margin: 16px 0 18px;
+    background: var(--panel);
+    border: 2px solid rgba(217, 226, 242, 0.9);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 22px 48px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: border 0.18s ease, background 0.18s ease;
+}
+
+.equipment-request-toggle:hover,
+.equipment-request-toggle:has(input:checked) {
+    border-color: var(--secondary);
+    background: rgba(226, 223, 255, 0.52);
+}
+
+.equipment-request-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--secondary);
+}
+
+.equipment-request-toggle .choice-icon {
+    margin: 0;
+}
+
+.equipment-request-toggle strong,
+.equipment-request-toggle small {
+    display: block;
+}
+
+.equipment-request-toggle strong {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.equipment-request-fields {
+    margin-top: 0;
 }
 
 .lecturer-choice-card {

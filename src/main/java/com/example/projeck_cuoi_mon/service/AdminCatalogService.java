@@ -124,7 +124,7 @@ public class AdminCatalogService {
     public void createDepartment(DepartmentForm form) {
         String code = normalizeCode(form.getCode());
         departmentRepository.findByCode(code).ifPresent(existing -> {
-            throw new IllegalArgumentException("Ma khoa da ton tai");
+            throw new IllegalArgumentException("Mã khoa đã tồn tại");
         });
 
         Department department = Department.builder()
@@ -143,7 +143,7 @@ public class AdminCatalogService {
         departmentRepository.findByCode(code)
                 .filter(existing -> !existing.getId().equals(id))
                 .ifPresent(existing -> {
-                    throw new IllegalArgumentException("Ma khoa da ton tai");
+                    throw new IllegalArgumentException("Mã khoa đã tồn tại");
                 });
 
         department.setCode(code);
@@ -156,7 +156,7 @@ public class AdminCatalogService {
     public void createMajor(MajorForm form) {
         String code = normalizeCode(form.getCode());
         majorRepository.findByCode(code).ifPresent(existing -> {
-            throw new IllegalArgumentException("Ma nganh da ton tai");
+            throw new IllegalArgumentException("Mã ngành đã tồn tại");
         });
 
         Department department = findDepartment(form.getDepartmentId());
@@ -177,7 +177,7 @@ public class AdminCatalogService {
         majorRepository.findByCode(code)
                 .filter(existing -> !existing.getId().equals(id))
                 .ifPresent(existing -> {
-                    throw new IllegalArgumentException("Ma nganh da ton tai");
+                    throw new IllegalArgumentException("Mã ngành đã tồn tại");
                 });
 
         major.setDepartment(findDepartment(form.getDepartmentId()));
@@ -201,7 +201,7 @@ public class AdminCatalogService {
     public void createLabRoomType(LabRoomTypeForm form) {
         String code = normalizeCode(form.getCode());
         labRoomTypeRepository.findByCode(code).ifPresent(existing -> {
-            throw new IllegalArgumentException("Ma danh muc phong lab da ton tai");
+            throw new IllegalArgumentException("Mã danh mục phòng lab đã tồn tại");
         });
 
         LabRoomType labRoomType = LabRoomType.builder()
@@ -220,7 +220,7 @@ public class AdminCatalogService {
         labRoomTypeRepository.findByCode(code)
                 .filter(existing -> !existing.getId().equals(id))
                 .ifPresent(existing -> {
-                    throw new IllegalArgumentException("Ma danh muc phong lab da ton tai");
+                    throw new IllegalArgumentException("Mã danh mục phòng lab đã tồn tại");
                 });
 
         labRoomType.setCode(code);
@@ -246,7 +246,7 @@ public class AdminCatalogService {
                     String name = lecturer.getUser().getFullName();
                     return title == null || title.isBlank() ? name : title + " " + name;
                 })
-                .orElse("Chua gan");
+                .orElse("Chưa gán");
 
         return new DepartmentView(
                 department.getId(),
@@ -277,17 +277,17 @@ public class AdminCatalogService {
 
     private Department findDepartment(Long id) {
         return departmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Khong tim thay khoa"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khoa"));
     }
 
     private Major findMajor(Long id) {
         return majorRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Khong tim thay nganh"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy ngành"));
     }
 
     private LabRoomType findLabRoomType(Long id) {
         return labRoomTypeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Khong tim thay danh muc phong lab"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy danh mục phòng lab"));
     }
 
     private String normalizeCode(String code) {

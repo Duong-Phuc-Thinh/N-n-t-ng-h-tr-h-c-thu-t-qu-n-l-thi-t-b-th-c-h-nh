@@ -57,7 +57,7 @@ public class AdminCatalogController {
 
         try {
             adminCatalogService.createDepartment(departmentForm);
-            redirectAttributes.addFlashAttribute("success", "Da them khoa moi");
+            redirectAttributes.addFlashAttribute("success", "Đã thêm khoa mới thành công");
             return "redirect:/admin/catalog/departments";
         } catch (IllegalArgumentException ex) {
             populateDepartmentPage(model);
@@ -97,7 +97,7 @@ public class AdminCatalogController {
 
         try {
             adminCatalogService.updateDepartment(id, departmentForm);
-            redirectAttributes.addFlashAttribute("success", "Da cap nhat khoa");
+            redirectAttributes.addFlashAttribute("success", "Đã cập nhật khoa thành công");
             return "redirect:/admin/catalog/departments";
         } catch (IllegalArgumentException ex) {
             populateDepartmentPage(model);
@@ -112,7 +112,7 @@ public class AdminCatalogController {
     @PostMapping("/departments/{id}/disable")
     public String disableDepartment(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         adminCatalogService.disableDepartment(id);
-        redirectAttributes.addFlashAttribute("success", "Da ngung hoat dong khoa");
+        redirectAttributes.addFlashAttribute("success", "Đã ngừng hoạt động khoa thành công");
         return "redirect:/admin/catalog/departments";
     }
 
@@ -133,7 +133,7 @@ public class AdminCatalogController {
 
         try {
             adminCatalogService.createMajor(majorForm);
-            redirectAttributes.addFlashAttribute("success", "Da them nganh dao tao");
+            redirectAttributes.addFlashAttribute("success", "Đã thêm ngành đào tạo thành công");
             return "redirect:/admin/catalog/departments";
         } catch (IllegalArgumentException ex) {
             populateDepartmentPage(model);
@@ -173,7 +173,7 @@ public class AdminCatalogController {
 
         try {
             adminCatalogService.updateMajor(id, majorForm);
-            redirectAttributes.addFlashAttribute("success", "Da cap nhat nganh dao tao");
+            redirectAttributes.addFlashAttribute("success", "Đã cập nhật ngành đào tạo thành công");
             return "redirect:/admin/catalog/departments";
         } catch (IllegalArgumentException ex) {
             populateDepartmentPage(model);
@@ -188,7 +188,7 @@ public class AdminCatalogController {
     @PostMapping("/majors/{id}/disable")
     public String disableMajor(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         adminCatalogService.disableMajor(id);
-        redirectAttributes.addFlashAttribute("success", "Da ngung hoat dong nganh");
+        redirectAttributes.addFlashAttribute("success", "Đã ngừng hoạt động ngành đào tạo thành công");
         return "redirect:/admin/catalog/departments";
     }
 
@@ -217,7 +217,7 @@ public class AdminCatalogController {
 
         try {
             adminCatalogService.createLabRoomType(labRoomTypeForm);
-            redirectAttributes.addFlashAttribute("success", "Da them danh muc phong lab");
+            redirectAttributes.addFlashAttribute("success", "Đã thêm danh mục phòng lab thành công");
             return "redirect:/admin/catalog/lab-room-types";
         } catch (IllegalArgumentException ex) {
             populateLabRoomTypePage(model);
@@ -251,7 +251,7 @@ public class AdminCatalogController {
 
         try {
             adminCatalogService.updateLabRoomType(id, labRoomTypeForm);
-            redirectAttributes.addFlashAttribute("success", "Da cap nhat danh muc phong lab");
+            redirectAttributes.addFlashAttribute("success", "Đã cập nhật danh mục phòng lab thành công");
             return "redirect:/admin/catalog/lab-room-types";
         } catch (IllegalArgumentException ex) {
             populateLabRoomTypePage(model);
@@ -264,7 +264,7 @@ public class AdminCatalogController {
     @PostMapping("/lab-room-types/{id}/disable")
     public String disableLabRoomType(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         adminCatalogService.disableLabRoomType(id);
-        redirectAttributes.addFlashAttribute("success", "Da ngung hoat dong danh muc phong lab");
+        redirectAttributes.addFlashAttribute("success", "Đã ngừng hoạt động danh mục phòng lab thành công");
         return "redirect:/admin/catalog/lab-room-types";
     }
 

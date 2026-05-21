@@ -32,7 +32,7 @@ public class AuthService {
     @Transactional
     public SessionUser register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new IllegalArgumentException("Email đã tồn tại");
         }
 
         User user = User.builder()
@@ -59,14 +59,14 @@ public class AuthService {
     @Transactional(readOnly = true)
     public SessionUser login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail().trim().toLowerCase())
-                .orElseThrow(() -> new IllegalArgumentException("Email or password is incorrect"));
+                .orElseThrow(() -> new IllegalArgumentException("Email hoặc mật khẩu không chính xác"));
 
         if (user.getStatus() != UserStatus.ACTIVE) {
-            throw new IllegalArgumentException("Account is not active");
+            throw new IllegalArgumentException("Tài khoản hiện đang bị khóa hoặc ngừng hoạt động");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new IllegalArgumentException("Email or password is incorrect");
+            throw new IllegalArgumentException("Email hoặc mật khẩu không chính xác");
         }
 
         return toSessionUser(user);
@@ -74,11 +74,11 @@ public class AuthService {
 
     private void createStudentProfile(User user, RegisterRequest request) {
         Department department = findRequiredDepartment(request.getDepartmentId());
-        String studentCode = requiredText(request.getStudentCode(), "Student code is required");
-        String className = requiredText(request.getClassName(), "Class name is required");
+        String studentCode = requiredText(request.getStudentCode(), "Mã số sinh viên không được để trống");
+        String className = requiredText(request.getClassName(), "Tên lớp không được để trống");
 
         if (userProfileRepository.findByStudentCode(studentCode).isPresent()) {
-            throw new IllegalArgumentException("Student code already exists");
+            throw new IllegalArgumentException("Mã số sinh viên đã tồn tại");
         }
 
         UserProfile profile = UserProfile.builder()
@@ -92,28 +92,28 @@ public class AuthService {
 
     private void createLecturerProfile(User user, RegisterRequest request) {
         Department department = findRequiredDepartment(request.getDepartmentId());
-        String lecturerCode = requiredText(request.getLecturerCode(), "Lecturer code is required");
+        String lecturerCode = requiredText(request.getLecturerCode(), "Mã giảng viên không được để trống");
 
         if (lecturerRepository.findByLecturerCode(lecturerCode).isPresent()) {
-            throw new IllegalArgumentException("Lecturer code already exists");
+            throw new IllegalArgumentException("Mã giảng viên đã tồn tại");
         }
 
         Lecturer lecturer = Lecturer.builder()
                 .user(user)
                 .department(department)
                 .lecturerCode(lecturerCode)
-                .academicTitle(requiredText(request.getAcademicTitle(), "Academic title is required"))
-                .specialization(requiredText(request.getSpecialty(), "Specialty is required"))
+                .academicTitle(requiredText(request.getAcademicTitle(), "Học hàm/học vị không được để trống"))
+                .specialization(requiredText(request.getSpecialty(), "Chuyên môn không được để trống"))
                 .build();
         lecturerRepository.save(lecturer);
     }
 
     private Department findRequiredDepartment(Long departmentId) {
         if (departmentId == null) {
-            throw new IllegalArgumentException("Department is required");
+            throw new IllegalArgumentException("Khoa quản lý không được để trống");
         }
         return departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khoa"));
     }
 
     private String requiredText(String value, String message) {
